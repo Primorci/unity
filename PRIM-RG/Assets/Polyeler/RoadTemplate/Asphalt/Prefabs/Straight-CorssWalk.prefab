@@ -114,6 +114,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Straight-CorssWalk
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: babbaea3a1c89954684b982ec2d65d64, type: 3}
+      propertyPath: m_TagString
+      value: Road
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -124,6 +128,9 @@ PrefabInstance:
       insertIndex: 1
       addedObject: {fileID: 6047714267732625603}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: babbaea3a1c89954684b982ec2d65d64, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 426018869786110881}
     - targetCorrespondingSourceObject: {fileID: 8164078558771037576, guid: babbaea3a1c89954684b982ec2d65d64, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9151893379320901998}
@@ -160,3 +167,29 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: babbaea3a1c89954684b982ec2d65d64, type: 3}
   m_PrefabInstance: {fileID: 4931013070256684467}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5237426413324730594 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: babbaea3a1c89954684b982ec2d65d64, type: 3}
+  m_PrefabInstance: {fileID: 4931013070256684467}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &426018869786110881
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5237426413324730594}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 10.253734, y: 1, z: 26.396355}
+  m_Center: {x: -0.00000047683716, y: 0.09, z: -13.006634}

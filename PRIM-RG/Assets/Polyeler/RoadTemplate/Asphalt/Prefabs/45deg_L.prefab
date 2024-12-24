@@ -118,6 +118,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: 45deg_L
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: aef2a4ee7b71322478e16e60b76fc9c7, type: 3}
+      propertyPath: m_TagString
+      value: Road
+      objectReference: {fileID: 0}
     - target: {fileID: 1151388028547126963, guid: aef2a4ee7b71322478e16e60b76fc9c7, type: 3}
       propertyPath: m_LocalScale.x
       value: -1
@@ -132,10 +136,39 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 4211348244762143156}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: aef2a4ee7b71322478e16e60b76fc9c7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -4562756048559504504}
     - targetCorrespondingSourceObject: {fileID: 8164078558771037576, guid: aef2a4ee7b71322478e16e60b76fc9c7, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7350763825706656480}
   m_SourcePrefab: {fileID: 100100000, guid: aef2a4ee7b71322478e16e60b76fc9c7, type: 3}
+--- !u!1 &218691285806148930 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: aef2a4ee7b71322478e16e60b76fc9c7, type: 3}
+  m_PrefabInstance: {fileID: 1137611085201788947}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &-4562756048559504504
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 218691285806148930}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 12.345234, y: 1, z: 12.719029}
+  m_Center: {x: 1.1182277, y: 0.09, z: -6.255134}
 --- !u!4 &595357218166192120 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: aef2a4ee7b71322478e16e60b76fc9c7, type: 3}

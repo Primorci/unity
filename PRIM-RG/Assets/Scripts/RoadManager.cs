@@ -8,11 +8,12 @@ public class RoadManager : MonoBehaviour
     public List<GameObject> roadPrefabs;
     public int initialRoadCount = 5;
     public float roadLength = 10f;
-    public int maxRoads = 20;
+    public int maxRoads = 10;
 
     private Queue<GameObject> activeRoads = new Queue<GameObject>();
     private Vector3 nextSpawnPos = Vector3.zero;
     private Quaternion nextSpawnRotation = Quaternion.identity;
+    private GameObject lastRoadSegment;
 
     void Start()
     {
@@ -37,8 +38,16 @@ public class RoadManager : MonoBehaviour
 
     public void SpawnRoadSegment(GameObject roadPrefab)
     {
+        if (CheckForIntersection(roadPrefab, nextSpawnPos, nextSpawnRotation, lastRoadSegment))
+        {
+            Debug.LogWarning("Intersection detected! Skipping road segment.");
+            return; // Skip generating this road segment
+        }
+
         Debug.Log($"Spawning Road: {roadPrefab.name} at {nextSpawnPos}");
+
         GameObject newRoad = Instantiate(roadPrefab, nextSpawnPos, nextSpawnRotation);
+        lastRoadSegment = newRoad;
         activeRoads.Enqueue(newRoad);
 
         Transform exitPoint = SelectExitPoint(newRoad);
@@ -95,6 +104,39 @@ public class RoadManager : MonoBehaviour
         Debug.Log($"Road Segment Deleted: {oldestRoad.ToString()}\nRoad Segment Count: {activeRoads.Count}");
         Destroy(oldestRoad);
     }
+
+    bool CheckForIntersection(GameObject roadPrefab, Vector3 spawnPosition, Quaternion spawnRotation, GameObject lastRoadSegment)
+    {
+        // Get BoxCollider of the prefab
+        BoxCollider boxCollider = roadPrefab.GetComponent<BoxCollider>();
+        if (boxCollider == null)
+        {
+            Debug.LogError("Road prefab must have a BoxCollider for intersection detection.");
+            return false;
+        }
+
+        // Calculate size and adjusted center
+        Vector3 size = boxCollider.size * 1.01f; // Add slight padding
+        Vector3 center = spawnPosition + spawnRotation * boxCollider.center;
+
+        // Check for overlapping objects
+        Collider[] intersectingObjects = Physics.OverlapBox(center, size / 2, spawnRotation);
+
+        // Filter intersecting objects by tag and ignore the last road segment
+        foreach (Collider collider in intersectingObjects)
+        {
+            if (collider.CompareTag("Road") && collider.gameObject != lastRoadSegment)
+            {
+                Debug.Log($"Intersection detected with: {collider.name}");
+                return true;
+            }
+        }
+
+        // No intersections found
+        return false;
+    }
+
+
 
     void OnDrawGizmos()
     {
