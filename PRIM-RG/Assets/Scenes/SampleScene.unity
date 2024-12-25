@@ -302,12 +302,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &275610145
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
 --- !u!54 &275610146
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1091,13 +1085,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1162263290}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1162263290 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3667211753972221885, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
-  m_PrefabInstance: {fileID: 1178089102}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1178089102
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1115,21 +1104,49 @@ PrefabInstance:
       value: 0.744
       objectReference: {fileID: 0}
     - target: {fileID: 2353221585865748380, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+      propertyPath: breakForce
+      value: 3000
+      objectReference: {fileID: 0}
+    - target: {fileID: 2353221585865748380, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+      propertyPath: motorForce
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 2353221585865748380, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+      propertyPath: maxSteerAngle
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2353221585865748380, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+      propertyPath: rearLeftWheelCollider
+      value: 
+      objectReference: {fileID: 1178089111}
+    - target: {fileID: 2353221585865748380, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
       propertyPath: frontLeftWheelCollider
       value: 
       objectReference: {fileID: 1178089110}
     - target: {fileID: 2353221585865748380, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
       propertyPath: rearLeftWheelTransform
       value: 
-      objectReference: {fileID: 2078845011}
+      objectReference: {fileID: 1178089105}
+    - target: {fileID: 2353221585865748380, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+      propertyPath: rearRightWheelCollider
+      value: 
+      objectReference: {fileID: 1178089109}
+    - target: {fileID: 2353221585865748380, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+      propertyPath: frontLeftWheelTransform
+      value: 
+      objectReference: {fileID: 1178089108}
+    - target: {fileID: 2353221585865748380, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+      propertyPath: frontRightWheelCollider
+      value: 
+      objectReference: {fileID: 1178089112}
     - target: {fileID: 2353221585865748380, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
       propertyPath: rearRightWheelTransform
       value: 
-      objectReference: {fileID: 254333639}
+      objectReference: {fileID: 1178089104}
     - target: {fileID: 2353221585865748380, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
       propertyPath: frontRightWheelTransform
       value: 
-      objectReference: {fileID: 446850996}
+      objectReference: {fileID: 1178089107}
     - target: {fileID: 3638911070570068518, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
       propertyPath: m_Name
       value: Simple Retro Car
@@ -1203,8 +1220,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3638911070570068518, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
-      insertIndex: 2
+      insertIndex: -1
       addedObject: {fileID: 275610146}
+    - targetCorrespondingSourceObject: {fileID: 3638911070570068518, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 275610147}
     - targetCorrespondingSourceObject: {fileID: 4123829941985280722, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1178089110}
@@ -1214,9 +1234,34 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3638911070570068518, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
   m_PrefabInstance: {fileID: 1178089102}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &1178089104 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 286543582901452437, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+  m_PrefabInstance: {fileID: 1178089102}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1178089105 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7833293775386317676, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+  m_PrefabInstance: {fileID: 1178089102}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1178089106 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4123829941985280722, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+  m_PrefabInstance: {fileID: 1178089102}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1178089107 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7783998986536950344, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+  m_PrefabInstance: {fileID: 1178089102}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1178089108 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4656789524055844519, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+  m_PrefabInstance: {fileID: 1178089102}
+  m_PrefabAsset: {fileID: 0}
+--- !u!146 &1178089109 stripped
+WheelCollider:
+  m_CorrespondingSourceObject: {fileID: 8721031726019385691, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
   m_PrefabInstance: {fileID: 1178089102}
   m_PrefabAsset: {fileID: 0}
 --- !u!146 &1178089110
@@ -1258,6 +1303,16 @@ WheelCollider:
   m_LayerOverridePriority: 0
   m_Enabled: 1
   m_ProvidesContacts: 0
+--- !u!146 &1178089111 stripped
+WheelCollider:
+  m_CorrespondingSourceObject: {fileID: 7750738335668417348, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+  m_PrefabInstance: {fileID: 1178089102}
+  m_PrefabAsset: {fileID: 0}
+--- !u!146 &1178089112 stripped
+WheelCollider:
+  m_CorrespondingSourceObject: {fileID: 5576781264538326106, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+  m_PrefabInstance: {fileID: 1178089102}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1188292202
 GameObject:
   m_ObjectHideFlags: 0
@@ -1288,7 +1343,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1178089105}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!146 &1188292204
 WheelCollider:
@@ -1359,7 +1414,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1178089105}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!146 &1311625164
 WheelCollider:
@@ -2247,15 +2302,47 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1178089105}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!146 &2144982687
 WheelCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
-
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2144982685}
+  serializedVersion: 2
+  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 0.5
+  m_SuspensionSpring:
+    spring: 35000
+    damper: 4500
+    targetPosition: 0.5
+  m_SuspensionDistance: 0.3
+  m_ForceAppPointDistance: 0
+  m_Mass: 20
+  m_WheelDampingRate: 0.25
+  m_ForwardFriction:
+    m_ExtremumSlip: 0.4
+    m_ExtremumValue: 1
+    m_AsymptoteSlip: 0.8
+    m_AsymptoteValue: 0.5
+    m_Stiffness: 1
+  m_SidewaysFriction:
+    m_ExtremumSlip: 0.2
+    m_ExtremumValue: 1
+    m_AsymptoteSlip: 0.5
+    m_AsymptoteValue: 0.75
+    m_Stiffness: 1
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_Enabled: 1
+  m_ProvidesContacts: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -2268,4 +2355,7 @@ SceneRoots:
   - {fileID: 1945375655}
   - {fileID: 4543972}
   - {fileID: 236985996}
-
+  - {fileID: 1077456647}
+  - {fileID: 1188292203}
+  - {fileID: 1311625163}
+  - {fileID: 2144982686}
