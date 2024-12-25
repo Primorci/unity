@@ -207,7 +207,7 @@ Transform:
   m_GameObject: {fileID: 52740622}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.99513334, z: -0.09853762, w: 0}
-  m_LocalPosition: {x: 0, y: 2.174, z: -0.046000004}
+  m_LocalPosition: {x: 0, y: 2.174, z: 2.614}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -432,7 +432,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3667211753972221885, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -5.66
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 3667211753972221885, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
       propertyPath: m_LocalRotation.w
@@ -516,9 +516,17 @@ MonoBehaviour:
   - {fileID: 5237426413324730594, guid: 3bee9f04916dee5488435e538ab67160, type: 3}
   - {fileID: 5891473512902253993, guid: cb3c2e9e6fce15245bc12204b0f9e125, type: 3}
   - {fileID: 2990260005579261655, guid: 7eb6b009819e06a49b496f77d69ec83d, type: 3}
-  initialRoadCount: 5
-  roadLength: 10
+  - {fileID: 2192561811076189645, guid: 2b6ad755a0918c9479c4836d15221f0a, type: 3}
+  - {fileID: 3569691503866934235, guid: 76cfce92fa95669469b3be8d022bbde8, type: 3}
+  - {fileID: 2372066320007317724, guid: c099aac444e0ec34db8d4de4369851c8, type: 3}
+  - {fileID: 5034154292710071012, guid: 34264fcde84046541892d46120b65f58, type: 3}
+  - {fileID: 1285623803541128759, guid: 3975cf1c16c08f640a4f169d0f932545, type: 3}
+  - {fileID: 6325575138822664078, guid: 8eb6789def0373b4ebc3aadd0448628b, type: 3}
+  - {fileID: 8878300792723607331, guid: 8579af0f05d90ee47a95d7b6c949b3ae, type: 3}
+  initialRoadCount: 1
+  roadLength: 5
   maxRoads: 20
+  con: 0
 --- !u!4 &1814100375
 Transform:
   m_ObjectHideFlags: 0
