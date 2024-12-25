@@ -308,23 +308,6 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1178089103}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df99183e29ef21f40ab66eea8a4e149a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  motorForce: 1000
-  breakForce: 3000
-  maxSteerAngle: 30
-  frontLeftWheelCollider: {fileID: 1178089110}
-  frontRightWheelCollider: {fileID: 1311625164}
-  rearLeftWheelCollider: {fileID: 2144982687}
-  rearRightWheelCollider: {fileID: 1188292204}
-  frontLeftWheelTransform: {fileID: 1178089109}
-  frontRightWheelTransform: {fileID: 1178089108}
-  rearLeftWheelTransform: {fileID: 1178089107}
-  rearRightWheelTransform: {fileID: 1178089104}
 --- !u!54 &275610146
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -333,7 +316,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1178089103}
   serializedVersion: 4
-  m_Mass: 1300
+  m_Mass: 1500
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -1131,6 +1114,22 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0.744
       objectReference: {fileID: 0}
+    - target: {fileID: 2353221585865748380, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+      propertyPath: frontLeftWheelCollider
+      value: 
+      objectReference: {fileID: 1178089110}
+    - target: {fileID: 2353221585865748380, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+      propertyPath: rearLeftWheelTransform
+      value: 
+      objectReference: {fileID: 2078845011}
+    - target: {fileID: 2353221585865748380, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+      propertyPath: rearRightWheelTransform
+      value: 
+      objectReference: {fileID: 254333639}
+    - target: {fileID: 2353221585865748380, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+      propertyPath: frontRightWheelTransform
+      value: 
+      objectReference: {fileID: 446850996}
     - target: {fileID: 3638911070570068518, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
       propertyPath: m_Name
       value: Simple Retro Car
@@ -1201,29 +1200,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 3667211753972221885, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1077456647}
-    - targetCorrespondingSourceObject: {fileID: 4651953944484951295, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1311625163}
-    - targetCorrespondingSourceObject: {fileID: 4651953944484951295, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2144982686}
-    - targetCorrespondingSourceObject: {fileID: 4651953944484951295, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1188292203}
+    m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3638911070570068518, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 275610147}
-    - targetCorrespondingSourceObject: {fileID: 3638911070570068518, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
-      insertIndex: -1
+      insertIndex: 2
       addedObject: {fileID: 275610146}
-    - targetCorrespondingSourceObject: {fileID: 3638911070570068518, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 275610145}
     - targetCorrespondingSourceObject: {fileID: 4123829941985280722, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1178089110}
@@ -1233,34 +1214,9 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3638911070570068518, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
   m_PrefabInstance: {fileID: 1178089102}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &1178089104 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 286543582901452437, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
-  m_PrefabInstance: {fileID: 1178089102}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1178089105 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4651953944484951295, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
-  m_PrefabInstance: {fileID: 1178089102}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1178089106 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4123829941985280722, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
-  m_PrefabInstance: {fileID: 1178089102}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1178089107 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7833293775386317676, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
-  m_PrefabInstance: {fileID: 1178089102}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1178089108 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7783998986536950344, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
-  m_PrefabInstance: {fileID: 1178089102}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1178089109 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4656789524055844519, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
   m_PrefabInstance: {fileID: 1178089102}
   m_PrefabAsset: {fileID: 0}
 --- !u!146 &1178089110
@@ -2298,40 +2254,8 @@ WheelCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
+
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2144982685}
-  serializedVersion: 2
-  m_Center: {x: 0, y: 0, z: 0}
-  m_Radius: 0.32
-  m_SuspensionSpring:
-    spring: 90000
-    damper: 9000
-    targetPosition: 0.5
-  m_SuspensionDistance: 0.3
-  m_ForceAppPointDistance: 0
-  m_Mass: 20
-  m_WheelDampingRate: 0.25
-  m_ForwardFriction:
-    m_ExtremumSlip: 0.4
-    m_ExtremumValue: 1
-    m_AsymptoteSlip: 0.8
-    m_AsymptoteValue: 0.5
-    m_Stiffness: 1
-  m_SidewaysFriction:
-    m_ExtremumSlip: 0.2
-    m_ExtremumValue: 1
-    m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
-    m_Stiffness: 1
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_Enabled: 1
-  m_ProvidesContacts: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -2344,3 +2268,4 @@ SceneRoots:
   - {fileID: 1945375655}
   - {fileID: 4543972}
   - {fileID: 236985996}
+
