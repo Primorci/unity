@@ -1,12 +1,17 @@
+using M2MqttUnity;
 using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.VFX;
+using UnityEngine.WSA;
+using uPLibrary.Networking.M2Mqtt.Messages;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
 using Random = UnityEngine.Random;
 
-public class RoadManager : MonoBehaviour
+public class RoadManager : M2MqttUnityClient
 {
     public Transform player;
     public List<GameObject> roadPrefabs;
@@ -28,58 +33,70 @@ public class RoadManager : MonoBehaviour
 
     private int sessionDuration = 0;
 
-    void Start()
+    private class RoadData
     {
-        startTime = Time.realtimeSinceStartup;
+        public string eventType;
 
-        lastRoadSegment = Instantiate(RandomRoadSegment(), nextSpawnPosition, nextSpawnRotation);
+        public string roadType;
+
+        public float loadTime;
+        public int exitPointCount;
+        public Vector3 position;
+
+        public RoadData() { }
+        public RoadData(string eventType, string roadType, float loadTime, int exitPointCount, Vector3 position)
+        {
+            this.eventType = eventType;
+            this.roadType = roadType;
+            this.loadTime = loadTime;
+            this.exitPointCount = exitPointCount;
+            this.position = position;
+        }
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+
+        startTime = Time.realtimeSinceStartup;
+        var roadPrefab = RandomRoadSegment();
+        lastRoadSegment = Instantiate(roadPrefab, nextSpawnPosition, nextSpawnRotation);
         activeRoads.Enqueue(lastRoadSegment);
-        CollectExitPoints(lastRoadSegment);
+        var exitPointsCount = CollectExitPoints(lastRoadSegment);
 
         endTime = Time.realtimeSinceStartup;
         loadTime = endTime - startTime;
 
-        //sendDataToMQTT("Road generation", loadTime);
-        MQTTManager.RoadGenerationTime.Observe(loadTime);
+        RoadData road = new RoadData("generation", roadPrefab.name, loadTime, exitPointsCount, new Vector3(0, 0, 0));
+        client.Publish("game/road/generation", Encoding.ASCII.GetBytes(JsonUtility.ToJson(road)));
+
+        PublishPrometheus(road);
+
     }
 
-    void Update()
+    protected override void Update()
     {
+        base.Update();
+
         if (isInRange())
         {
-            startTime = Time.realtimeSinceStartup;
-
             SpawnRoadSegment(RandomRoadSegment());
-
-            endTime = Time.realtimeSinceStartup;
-            loadTime = endTime - startTime;
-
-            //sendDataToMQTT("Road generation", loadTime);
-            MQTTManager.RoadGenerationTime.Observe(loadTime);
         }
 
         if (activeRoads.Count > maxRoads)
         {
             startTime = Time.realtimeSinceStartup;
 
-            RemoveOldestRoadSegment();
+            string name = RemoveOldestRoadSegment();
 
             endTime = Time.realtimeSinceStartup;
             loadTime = endTime - startTime;
 
-            //sendDataToMQTT("Road deletion", loadTime);
-            MQTTManager.RoadUnloadTime.Observe(loadTime);
-        }
-    }
+            RoadData road = new RoadData("degeneration", name, loadTime, -1, new Vector3(0, 0, 0));
+            client.Publish("game/road/degeneration", Encoding.ASCII.GetBytes(JsonUtility.ToJson(road)));
 
-    void sendDataToMQTT(string eventType, float loadTime)
-    {
-        JSONFormating.LoadSpeedData data = new JSONFormating.LoadSpeedData(eventType, loadTime);
-        MQTTManager.PublishData(
-            "game/performance/load_time",
-            JsonUtility.ToJson(data),
-            JSONFormating.CreatePrometheusFormat<JSONFormating.LoadSpeedData>(data)
-        );
+            PublishPrometheus(road);
+        }
     }
 
     bool isInRange()
@@ -100,9 +117,17 @@ public class RoadManager : MonoBehaviour
 
     public void SpawnRoadSegment(GameObject roadPrefab)
     {
+        startTime = Time.realtimeSinceStartup;
         if (CheckForIntersection(roadPrefab, nextSpawnPosition, nextSpawnRotation, lastRoadSegment))
         {
             Debug.LogWarning("Intersection detected! Skipping road segment.");
+            endTime = Time.realtimeSinceStartup;
+            loadTime = endTime - startTime;
+
+            RoadData errorRoad = new RoadData("error", roadPrefab.name, loadTime, -1, nextSpawnPosition);
+            client.Publish("game/road/generation/error", Encoding.ASCII.GetBytes(JsonUtility.ToJson(errorRoad)));
+
+            PublishPrometheus(errorRoad);
             return; // Skip generating this road segment
         }
 
@@ -114,23 +139,29 @@ public class RoadManager : MonoBehaviour
         lastRoadSegment = newRoad;
         activeRoads.Enqueue(newRoad);
 
-        MQTTManager.RoadType.WithLabels(roadPrefab.name).Inc();
-        MQTTManager.RoadPositionX.Set(nextSpawnPosition.x);
-        MQTTManager.RoadPositionY.Set(nextSpawnPosition.y);
-        MQTTManager.RoadPositionZ.Set(nextSpawnPosition.z);
+        Vector3 lastPosition = nextSpawnPosition;
+      
 
-        CollectExitPoints(newRoad);
+        var exitPointsCount = CollectExitPoints(newRoad);
 
         Debug.Log($"Road Segment Added Succesfuly - Road Segment Count: {activeRoads.Count}");
+
+        endTime = Time.realtimeSinceStartup;
+        loadTime = endTime - startTime;
+
+        RoadData road = new RoadData("generation", roadPrefab.name, loadTime, exitPointsCount, lastPosition);
+        client.Publish("game/road/generation", Encoding.ASCII.GetBytes(JsonUtility.ToJson(road)));
+
+        PublishPrometheus(road);
     }
 
-    void CollectExitPoints(GameObject road)
+    int CollectExitPoints(GameObject road)
     {
         Transform[] exitPoints = road.GetComponentsInChildren<Transform>();
         if (exitPoints == null)
         {
             Debug.LogWarning($"Couldn't find any exit points in {road}");
-            return;
+            return -1;
         }
 
         nextSpawnPositions.Clear();
@@ -145,8 +176,9 @@ public class RoadManager : MonoBehaviour
             }
         }
 
-        MQTTManager.ExitPointCount.Observe(exitPoints.Length);
         Debug.Log($"Collected {nextSpawnPositions.Count} unique exit points.");
+
+        return exitPoints.Length;
     }
 
     GameObject RandomRoadSegment()
@@ -154,11 +186,15 @@ public class RoadManager : MonoBehaviour
         return roadPrefabs[Random.Range(0, roadPrefabs.Count)];
     }
 
-    void RemoveOldestRoadSegment()
+    string RemoveOldestRoadSegment()
     {
         GameObject oldestRoad = activeRoads.Dequeue();
+        string name = oldestRoad.name;
+
         Debug.Log($"Road Segment Deleted: {oldestRoad.ToString()}\nRoad Segment Count: {activeRoads.Count}");
         Destroy(oldestRoad);
+
+        return name;
     }
 
     bool CheckForIntersection(GameObject roadPrefab, Vector3 spawnPosition, Quaternion spawnRotation, GameObject lastRoadSegment)
@@ -190,6 +226,16 @@ public class RoadManager : MonoBehaviour
 
         // No intersections found
         return false;
+    }
+
+    private void PublishPrometheus(RoadData road)
+    {
+        MQTTManager.RoadType.WithLabels(road.roadType).Inc();
+        MQTTManager.RoadGenerationTime.Observe(road.loadTime);
+        MQTTManager.ExitPointCount.Observe(road.exitPointCount);
+        MQTTManager.RoadPositionX.Set(road.position.x);
+        MQTTManager.RoadPositionY.Set(road.position.y);
+        MQTTManager.RoadPositionZ.Set(road.position.z);
     }
 
     void OnDrawGizmos()

@@ -14,19 +14,6 @@ using System.Collections;
 
 public class MQTTManager : M2MqttUnityClient
 {
-    public string MqttAddres = "10.8.1.6";
-    private static new MqttClient client = null;
-
-    private HttpListener listener;
-    private const string url = "http://localhost:5555/";
-    private bool running = true;
-    private static StringBuilder prometheusResponse = new StringBuilder();
-
-    private static float timeInterval = 0.5f;
-    private static float timeElapsed = 0f;
-
-    private float sessionTimeStart = 0f;
-
     // Player metrics --------------------------------------
     public static readonly Gauge CarSpeed = Metrics.CreateGauge(
         "player_speed", 
@@ -188,49 +175,49 @@ public class MQTTManager : M2MqttUnityClient
         }
     );
 
+    //public string MqttAddres = "10.8.1.6";
+
+    private HttpListener listener;
+    private const string url = "http://localhost:5555/";
+    private bool running = true;
+    private static StringBuilder prometheusResponse = new StringBuilder();
+
+    private static float timeInterval = 0.5f;
+    private static float timeElapsed = 0f;
+
+    private float sessionTimeStart = 0f;
+
     private new void Start()
     {
-        base.Start();
-
         sessionTimeStart = Time.realtimeSinceStartup;
 
-        // Initialize the MQTT broker and test the connection
-        client = new MqttClient(MqttAddres);
-        client.MqttMsgPublishReceived += onMessageReceived;
-        string clientId = Guid.NewGuid().ToString();
-        //client.Connect(clientId);
+        base.Start();
 
-        //if (client.IsConnected)
+
+        //// Initialize the MQTT broker and test the connection
+        //client = new MqttClient(brokerAddress);
+        //client.MqttMsgPublishReceived += onMessageReceived;
+        //string clientId = Guid.NewGuid().ToString();
+        //try
         //{
-        //    client.Subscribe(new string[] { "test/topic" }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE });
-
-        //    client.Publish("test/topic", System.Text.Encoding.UTF8.GetBytes("Hello World!"));
+        //    client.Connect(clientId);
+        //    if (client.IsConnected)
+        //    {
+        //        Debug.Log("MQTT Client connected successfully!");
+        //    }
+        //    else
+        //    {
+        //        Debug.LogError("Failed to connect to MQTT broker.");
+        //    }
         //}
-        //else
+        //catch (Exception ex)
         //{
-        //    Debug.LogError($"Unable to connect to MQTT addres {MqttAddres}");
-
+        //    Debug.LogError($"Exception during MQTT connection: {ex.Message}");
         //}
-        try
-        {
-            client.Connect(clientId);
-            if (client.IsConnected)
-            {
-                Debug.Log("MQTT Client connected successfully!");
-            }
-            else
-            {
-                Debug.LogError("Failed to connect to MQTT broker.");
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"Exception during MQTT connection: {ex.Message}");
-        }
 
         try
         {
-            var server = new MetricServer(port: 5555);
+            var server = new MetricServer(hostname: "10.8.1.3", port: 5555);
             server.Start();
             Debug.Log("Prometheus metric server started successfully.");
         }
@@ -245,29 +232,6 @@ public class MQTTManager : M2MqttUnityClient
         base.Update();
 
         timeElapsed += Time.deltaTime;
-    }
-
-    public static void PublishData(string topic, string jsonData, string prometheusData)
-    {
-
-        if (timeElapsed >= timeInterval)
-        {
-            try
-            {
-                // Send the jsonData to MQTT broker
-                byte[] message = Encoding.UTF8.GetBytes(jsonData);
-                client.Publish(topic, message, MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE, false);
-
-                prometheusResponse.Append(prometheusData);
-
-                Debug.Log($"Published to topic {topic}: {jsonData}");
-            }
-            catch (Exception e)
-            {
-                Debug.LogError("Cannot publish, Exception: ." + e.Message);
-            }
-            timeElapsed = 0f;
-        }
     }
 
     private void onMessageReceived(object sender, MqttMsgPublishEventArgs e)

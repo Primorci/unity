@@ -10,8 +10,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using Prometheus;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
+using M2MqttUnity;
+using System.Text;
 
-public class CarController : MonoBehaviour
+public class CarController : M2MqttUnityClient
 {
     private float horizontalInput, verticalInput;
     private float currentSteerAngle, currentbreakForce;
@@ -33,21 +36,46 @@ public class CarController : MonoBehaviour
 
     private static Rigidbody rb;
 
-    private void Start()
+    private int carEvent;
+
+    private class CarData
     {
+        public float speed;
+        public float distanceTraveled;
+
+        public int carEvent;
+        public CarData(float speed, float distanceTraveled, int carEvent)
+        {
+            this.speed = speed;
+            this.distanceTraveled = distanceTraveled;
+            this.carEvent = carEvent;
+        }
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+
         rb = GetComponent<Rigidbody>();
         lastPosition = transform.position;
     }
 
-    private void FixedUpdate()
+    protected override void Update()
     {
+        base.Update();
+
         GetInput();
         HandleMotor();
         HandleSteering();
         UpdateWheels();
 
-        MQTTManager.CarSpeed.Set(getCarSpeed());
-        MQTTManager.DistanceTraveled.Set(getDistanceTraveld());
+
+        CarData car = new CarData(getCarSpeed(), getDistanceTraveld(), carEvent);
+        client.Publish("game/player", Encoding.ASCII.GetBytes(JsonUtility.ToJson(car)));
+        
+        MQTTManager.CarSpeed.Set(car.speed);
+        MQTTManager.DistanceTraveled.Set(car.distanceTraveled);
+        MQTTManager.CarState.Set(car.carEvent);
     }
 
     private void GetInput()
@@ -61,39 +89,14 @@ public class CarController : MonoBehaviour
         // Breaking Input
         isBreaking = Input.GetKey(KeyCode.Space);
 
-        string eventType = null;
-        string keyPressed = null;
-
-        if(horizontalInput > 0)
-        {
-            MQTTManager.CarState.Set(4);
-     
-        }else if(verticalInput > 0)
-        {
-            MQTTManager.CarState.Set(3);
-        }else if (isBreaking)
-        {
-            MQTTManager.CarState.Set(2);
-        }else
-        {
-            MQTTManager.CarState.Set(1);
-
-        }
-
-        foreach (KeyCode keyCode in System.Enum.GetValues(typeof(KeyCode)))
-        {
-            if (Input.GetKeyDown(keyCode))
-            {
-                MQTTManager.KeyPressCounter.WithLabels(keyCode.ToString()).Inc();
-            }
-        }
-
-        //JSONFormating.PlayerData data = new JSONFormating.PlayerData(getCarSpeed(), getDistanceTraveld(), eventType, keyPressed);
-        //MQTTManager.PublishData(
-        //    "game/player",
-        //    JsonUtility.ToJson(data),
-        //    JSONFormating.CreatePrometheusFormat<JSONFormating.PlayerData>(data)
-        //);
+        if(horizontalInput > 0)  
+           carEvent = 3;
+        else if(verticalInput > 0)
+            carEvent = 2;
+        else if (isBreaking)  
+            carEvent = 1; 
+        else 
+            carEvent = 0; 
     }
 
     private void HandleMotor()

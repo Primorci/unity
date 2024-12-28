@@ -410,6 +410,112 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!1 &358531668
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 358531670}
+  - component: {fileID: 358531669}
+  m_Layer: 0
+  m_Name: fpsDisplay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &358531669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 358531668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16051f1105243d84eabf9960a9ee061c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  brokerAddress: 10.8.1.6
+  brokerPort: 1883
+  isEncrypted: 0
+  certificateName: 
+  connectionDelay: 500
+  timeoutOnConnection: 30000
+  autoConnect: 0
+  mqttUserName: 
+  mqttPassword: 
+--- !u!4 &358531670
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 358531668}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &887212899
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 887212901}
+  - component: {fileID: 887212900}
+  m_Layer: 0
+  m_Name: M2MQTT
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &887212900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 887212899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 822dea233527ccf44ab22feb18d19c28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  brokerAddress: 10.8.1.6
+  brokerPort: 1883
+  isEncrypted: 0
+  certificateName: 
+  connectionDelay: 500
+  timeoutOnConnection: 30000
+  autoConnect: 0
+  mqttUserName: 
+  mqttPassword: 
+--- !u!4 &887212901
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 887212899}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1512023390
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -418,6 +524,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2353221585865748380, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+      propertyPath: brokerAddress
+      value: 10.8.1.6
+      objectReference: {fileID: 0}
     - target: {fileID: 3638911070570068518, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
       propertyPath: m_Name
       value: Player
@@ -501,6 +611,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5eac98a6f803454b9b31cc9794da4a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  brokerAddress: 10.8.1.6
+  brokerPort: 1883
+  isEncrypted: 0
+  certificateName: 
+  connectionDelay: 500
+  timeoutOnConnection: 30000
+  autoConnect: 0
+  mqttUserName: 
+  mqttPassword: 
   player: {fileID: 1631189556}
   roadPrefabs:
   - {fileID: 218691285806148930, guid: c184fe835255c404783cf55fa6a84d18, type: 3}
@@ -523,7 +642,6 @@ MonoBehaviour:
   - {fileID: 1285623803541128759, guid: 3975cf1c16c08f640a4f169d0f932545, type: 3}
   - {fileID: 6325575138822664078, guid: 8eb6789def0373b4ebc3aadd0448628b, type: 3}
   - {fileID: 8878300792723607331, guid: 8579af0f05d90ee47a95d7b6c949b3ae, type: 3}
-  initialRoadCount: 1
   roadLength: 5
   maxRoads: 20
   con: 0
@@ -550,3 +668,5 @@ SceneRoots:
   - {fileID: 146939006}
   - {fileID: 1814100375}
   - {fileID: 1512023390}
+  - {fileID: 887212901}
+  - {fileID: 358531670}
