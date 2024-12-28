@@ -1,0 +1,203 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Prometheus.AspNetCore</name>
+    </assembly>
+    <members>
+        <member name="M:Prometheus.HttpMetricsMiddlewareExtensions.UseHttpMetrics(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.Action{Prometheus.HttpMetrics.HttpMiddlewareExporterOptions})">
+            <summary>
+            Configures the ASP.NET Core request pipeline to collect Prometheus metrics on processed HTTP requests.
+            
+            If using ASP.NET Core 3 or newer, call this after .UseRouting().
+            </summary>
+        </member>
+        <member name="M:Prometheus.HttpMetricsMiddlewareExtensions.UseHttpMetrics(Microsoft.AspNetCore.Builder.IApplicationBuilder,Prometheus.HttpMetrics.HttpMiddlewareExporterOptions)">
+            <summary>
+            Configures the ASP.NET Core request pipeline to collect Prometheus metrics on processed HTTP requests.
+            
+            If using ASP.NET Core 3 or newer, call this after .UseRouting().
+            </summary>
+        </member>
+        <member name="T:Prometheus.HttpMetrics.CaptureRouteDataMiddleware">
+            <summary>
+            If routing data is available before executing the inner handler, this routing data is captured
+            and can be used later by other middlewares that wish not to be affected by runtime changes to routing data.
+            </summary>
+            <remarks>
+            This is intended to be executed after the .UseRouting() middleware that performs ASP.NET Core 3 endpoint routing.
+            
+            The captured route data is stored in the context via ICapturedRouteDataFeature.
+            </remarks>
+        </member>
+        <member name="P:Prometheus.HttpMetrics.HttpInProgressOptions.Gauge">
+            <summary>
+            Set this to use a custom metric instead of the default.
+            </summary>
+        </member>
+        <member name="P:Prometheus.HttpMetrics.HttpMetricsOptionsBase.AdditionalRouteParameters">
+            <summary>
+            Additional route parameters to include beyond the defaults (controller/action).
+            This may be useful if you have, for example, a "version" parameter for API versioning.
+            </summary>
+            <remarks>
+            Metric labels are automatically added for these parameters, unless you provide your
+            own metric instance in the options (in which case you must add the required labels).
+            </remarks>
+        </member>
+        <member name="P:Prometheus.HttpMetrics.HttpMetricsOptionsBase.Registry">
+            <summary>
+            Allows you to override the registry used to create the default metric instance.
+            Value is ignored if you specify a custom metric instance in the options.
+            </summary>
+        </member>
+        <member name="P:Prometheus.HttpMetrics.HttpMiddlewareExporterOptions.CaptureMetricsUrl">
+            <summary>
+            Whether to capture metrics for queries to the /metrics endpoint (where metrics are exported by default). Defaults to false.
+            This matches against URLs starting with the /metrics string specifically - if you use a custom metrics endpoint, this will not match.
+            </summary>
+        </member>
+        <member name="M:Prometheus.HttpMetrics.HttpMiddlewareExporterOptions.AddRouteParameter(Prometheus.HttpMetrics.HttpRouteParameterMapping)">
+            <summary>
+            Adds an additional route parameter to all the HTTP metrics.
+            
+            Helper method to avoid manually adding it to each one.
+            </summary>
+        </member>
+        <member name="P:Prometheus.HttpMetrics.HttpRequestCountOptions.Counter">
+            <summary>
+            Set this to use a custom metric instead of the default.
+            </summary>
+        </member>
+        <member name="P:Prometheus.HttpMetrics.HttpRequestDurationOptions.Histogram">
+            <summary>
+            Set this to use a custom metric instead of the default.
+            </summary>
+        </member>
+        <member name="T:Prometheus.HttpMetrics.HttpRequestLabelNames">
+            <summary>
+            Label names reserved for the use by the HTTP request metrics.
+            </summary>
+        </member>
+        <member name="T:Prometheus.HttpMetrics.HttpRequestMiddlewareBase`2">
+            <summary>
+            This base class performs the data management necessary to associate the correct labels and values
+            with HTTP request metrics, depending on the options the user has provided for the HTTP metric middleware.
+            
+            The following labels are supported:
+            'code' (HTTP status code)
+            'method' (HTTP request method)
+            'controller' (The Controller used to fulfill the HTTP request)
+            'action' (The Action used to fulfill the HTTP request)
+            Any other label - custom HTTP route parameter (if specified in options).
+            
+            The 'code' and 'method' data are taken from the current HTTP context.
+            Other labels will be taken from the request routing information.
+            
+            If a custom metric is provided in the options, it must not be missing any labels for explicitly defined
+            custom route parameters. However, it is permitted to lack any of the default labels (code/method/...).
+            </summary>
+        </member>
+        <member name="P:Prometheus.HttpMetrics.HttpRequestMiddlewareBase`2.DefaultLabels">
+            <summary>
+            The set of labels from among the defaults that this metric supports.
+            
+            This set will be automatically extended with labels for additional
+            route parameters when creating the default metric instance.
+            </summary>
+        </member>
+        <member name="M:Prometheus.HttpMetrics.HttpRequestMiddlewareBase`2.CreateMetricInstance(System.String[])">
+            <summary>
+            Creates the default metric instance with the specified set of labels.
+            Only used if the caller does not provide a custom metric instance in the options.
+            </summary>
+        </member>
+        <member name="P:Prometheus.HttpMetrics.HttpRequestMiddlewareBase`2.MetricFactory">
+            <summary>
+            The factory to use for creating the default metric for this middleware.
+            Not used if a custom metric is already provided in options.
+            </summary>
+        </member>
+        <member name="M:Prometheus.HttpMetrics.HttpRequestMiddlewareBase`2.CreateChild(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Creates the metric child instance to use for measurements.
+            </summary>
+            <remarks>
+            Internal for testing purposes.
+            </remarks>
+        </member>
+        <member name="M:Prometheus.HttpMetrics.HttpRequestMiddlewareBase`2.CreateDefaultLabelSet">
+            <summary>
+            Creates the full set of labels supported for the current metric.
+            
+            This merges (in unspecified order) the defaults from prometheus-net with any in options.AdditionalRouteParameters.
+            </summary>
+        </member>
+        <member name="M:Prometheus.HttpMetrics.HttpRequestMiddlewareBase`2.ValidateAdditionalRouteParametersPresentInMetricLabelNames">
+            <summary>
+            Inspects the metric instance to ensure that all required labels are present.
+            </summary>
+            <remarks>
+            If there are mappings to include route parameters in the labels, there must be labels defined for each such parameter.
+            We do this automatically if we use the default metric instance but if a custom one is provided, this must be done by the caller.
+            </remarks>
+        </member>
+        <member name="M:Prometheus.HttpMetrics.HttpRequestMiddlewareBase`2.ValidateNoUnexpectedLabelNames">
+            <summary>
+            If we use a custom metric, it should not have labels that are neither defaults nor additional route parameters.
+            </summary>
+        </member>
+        <member name="T:Prometheus.HttpMetrics.HttpRouteParameterMapping">
+            <summary>
+            Maps an HTTP route parameter name to a Prometheus label name.
+            </summary>
+            <remarks>
+            Typically, the parameter name and the label name will be equal.
+            The purpose of this is to enable capture of route parameters that conflict with built-in label names like "method" (HTTP method).
+            </remarks>
+        </member>
+        <member name="P:Prometheus.HttpMetrics.HttpRouteParameterMapping.ParameterName">
+            <summary>
+            Name of the HTTP route parameter.
+            </summary>
+        </member>
+        <member name="P:Prometheus.HttpMetrics.HttpRouteParameterMapping.LabelName">
+            <summary>
+            Name of the Prometheus label.
+            </summary>
+        </member>
+        <member name="T:Prometheus.KestrelMetricServer">
+            <summary>
+            A stand-alone Kestrel based metric server that saves you the effort of setting up the ASP.NET Core pipeline.
+            For all practical purposes, this is just a regular ASP.NET Core server that only serves Prometheus requests.
+            </summary>
+        </member>
+        <member name="T:Prometheus.MetricServerMiddleware">
+            <summary>
+            Prometheus metrics export middleware for ASP.NET Core.
+            
+            You should use IApplicationBuilder.UseMetricServer extension method instead of using this class directly.
+            </summary>
+        </member>
+        <member name="M:Prometheus.MetricServerMiddlewareExtensions.MapMetrics(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder,System.String,Prometheus.CollectorRegistry)">
+            <summary>
+            Starts a Prometheus metrics exporter using endpoint routing.
+            The default URL is /metrics, which is a Prometheus convention.
+            Use static methods on the <see cref="T:Prometheus.Metrics"/> class to create your metrics.
+            </summary>
+        </member>
+        <member name="M:Prometheus.MetricServerMiddlewareExtensions.UseMetricServer(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.Int32,System.String,Prometheus.CollectorRegistry)">
+            <summary>
+            Starts a Prometheus metrics exporter, filtering to only handle requests received on a specific port.
+            The default URL is /metrics, which is a Prometheus convention.
+            Use static methods on the <see cref="T:Prometheus.Metrics"/> class to create your metrics.
+            </summary>
+        </member>
+        <member name="M:Prometheus.MetricServerMiddlewareExtensions.UseMetricServer(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.String,Prometheus.CollectorRegistry)">
+            <summary>
+            Starts a Prometheus metrics exporter.
+            The default URL is /metrics, which is a Prometheus convention.
+            Use static methods on the <see cref="T:Prometheus.Metrics"/> class to create your metrics.
+            </summary>
+        </member>
+    </members>
+</doc>
