@@ -1,14 +1,16 @@
 using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
+using Random = UnityEngine.Random;
 
 public class RoadManager : MonoBehaviour
 {
     public Transform player;
     public List<GameObject> roadPrefabs;
-    public int initialRoadCount = 1;
+    //public int initialRoadCount = 1;
     public float roadLength = 10f;
     public int maxRoads = 10;
 
@@ -22,33 +24,62 @@ public class RoadManager : MonoBehaviour
     private List<Vector3> nextSpawnPositions = new List<Vector3>();
     private List<Quaternion> nextSpawnRotations = new List<Quaternion>();
 
+    private float startTime, endTime, loadTime;
+
+    private int sessionDuration = 0;
 
     void Start()
     {
-        lastRoadSegment = Instantiate(roadPrefabs[16], nextSpawnPosition, nextSpawnRotation);
+        startTime = Time.realtimeSinceStartup;
+
+        lastRoadSegment = Instantiate(RandomRoadSegment(), nextSpawnPosition, nextSpawnRotation);
         activeRoads.Enqueue(lastRoadSegment);
         CollectExitPoints(lastRoadSegment);
-        //SelectExitPoint(lastRoadSegment);
 
-        //for (int i = 0; i < initialRoadCount - 1; i++)
-        //{
-        //    SpawnRoadSegment(RandomRoadSegment());
-        //}
+        endTime = Time.realtimeSinceStartup;
+        loadTime = endTime - startTime;
+
+        //sendDataToMQTT("Road generation", loadTime);
+        MQTTManager.RoadGenerationTime.Observe(loadTime);
     }
 
     void Update()
     {
-        //if (Vector3.Distance(player.position, nextSpawnPosition) < roadLength * 2 && con == true)
         if (isInRange())
         {
+            startTime = Time.realtimeSinceStartup;
+
             SpawnRoadSegment(RandomRoadSegment());
-            con = false;
+
+            endTime = Time.realtimeSinceStartup;
+            loadTime = endTime - startTime;
+
+            //sendDataToMQTT("Road generation", loadTime);
+            MQTTManager.RoadGenerationTime.Observe(loadTime);
         }
 
         if (activeRoads.Count > maxRoads)
         {
+            startTime = Time.realtimeSinceStartup;
+
             RemoveOldestRoadSegment();
+
+            endTime = Time.realtimeSinceStartup;
+            loadTime = endTime - startTime;
+
+            //sendDataToMQTT("Road deletion", loadTime);
+            MQTTManager.RoadUnloadTime.Observe(loadTime);
         }
+    }
+
+    void sendDataToMQTT(string eventType, float loadTime)
+    {
+        JSONFormating.LoadSpeedData data = new JSONFormating.LoadSpeedData(eventType, loadTime);
+        MQTTManager.PublishData(
+            "game/performance/load_time",
+            JsonUtility.ToJson(data),
+            JSONFormating.CreatePrometheusFormat<JSONFormating.LoadSpeedData>(data)
+        );
     }
 
     bool isInRange()
@@ -59,6 +90,7 @@ public class RoadManager : MonoBehaviour
             {
                 nextSpawnPosition = spawn;
                 nextSpawnRotation = nextSpawnRotations[nextSpawnPositions.IndexOf(spawn)];
+               
                 return true;
             }
         }
@@ -81,6 +113,11 @@ public class RoadManager : MonoBehaviour
         GameObject newRoad = Instantiate(roadPrefab, nextSpawnPosition, nextSpawnRotation);
         lastRoadSegment = newRoad;
         activeRoads.Enqueue(newRoad);
+
+        MQTTManager.RoadType.WithLabels(roadPrefab.name).Inc();
+        MQTTManager.RoadPositionX.Set(nextSpawnPosition.x);
+        MQTTManager.RoadPositionY.Set(nextSpawnPosition.y);
+        MQTTManager.RoadPositionZ.Set(nextSpawnPosition.z);
 
         CollectExitPoints(newRoad);
 
@@ -108,6 +145,7 @@ public class RoadManager : MonoBehaviour
             }
         }
 
+        MQTTManager.ExitPointCount.Observe(exitPoints.Length);
         Debug.Log($"Collected {nextSpawnPositions.Count} unique exit points.");
     }
 
@@ -205,5 +243,4 @@ public class RoadManager : MonoBehaviour
             }  
         }
     }
-
 }

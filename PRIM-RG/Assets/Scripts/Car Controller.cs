@@ -9,6 +9,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Prometheus;
+
 public class CarController : MonoBehaviour
 {
     private float horizontalInput, verticalInput;
@@ -26,12 +28,26 @@ public class CarController : MonoBehaviour
     [SerializeField] private Transform frontLeftWheelTransform, frontRightWheelTransform;
     [SerializeField] private Transform rearLeftWheelTransform, rearRightWheelTransform;
 
+    private Vector3 lastPosition; // Stores the last position of the car
+    private float totalDistance = 0f; // Total distance traveled
+
+    private static Rigidbody rb;
+
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        lastPosition = transform.position;
+    }
+
     private void FixedUpdate()
     {
         GetInput();
         HandleMotor();
         HandleSteering();
         UpdateWheels();
+
+        MQTTManager.CarSpeed.Set(getCarSpeed());
+        MQTTManager.DistanceTraveled.Set(getDistanceTraveld());
     }
 
     private void GetInput()
@@ -44,6 +60,40 @@ public class CarController : MonoBehaviour
 
         // Breaking Input
         isBreaking = Input.GetKey(KeyCode.Space);
+
+        string eventType = null;
+        string keyPressed = null;
+
+        if(horizontalInput > 0)
+        {
+            MQTTManager.CarState.Set(4);
+     
+        }else if(verticalInput > 0)
+        {
+            MQTTManager.CarState.Set(3);
+        }else if (isBreaking)
+        {
+            MQTTManager.CarState.Set(2);
+        }else
+        {
+            MQTTManager.CarState.Set(1);
+
+        }
+
+        foreach (KeyCode keyCode in System.Enum.GetValues(typeof(KeyCode)))
+        {
+            if (Input.GetKeyDown(keyCode))
+            {
+                MQTTManager.KeyPressCounter.WithLabels(keyCode.ToString()).Inc();
+            }
+        }
+
+        //JSONFormating.PlayerData data = new JSONFormating.PlayerData(getCarSpeed(), getDistanceTraveld(), eventType, keyPressed);
+        //MQTTManager.PublishData(
+        //    "game/player",
+        //    JsonUtility.ToJson(data),
+        //    JSONFormating.CreatePrometheusFormat<JSONFormating.PlayerData>(data)
+        //);
     }
 
     private void HandleMotor()
@@ -84,5 +134,24 @@ public class CarController : MonoBehaviour
         wheelCollider.GetWorldPose(out pos, out rot);
         wheelTransform.rotation = rot;
         wheelTransform.position = pos;
+    }
+
+    public static float getCarSpeed()
+    {
+        return rb.linearVelocity.magnitude * 3.6f;
+    }
+
+    public float getDistanceTraveld()
+    {
+        // Calculate the distance moved since the last frame
+        float distanceThisFrame = Vector3.Distance(transform.position, lastPosition);
+
+        // Add this distance to the total
+        totalDistance += distanceThisFrame;
+
+        // Update the last position
+        lastPosition = transform.position;
+
+        return totalDistance;
     }
 }
