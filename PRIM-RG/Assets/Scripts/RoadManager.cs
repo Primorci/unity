@@ -1,8 +1,6 @@
-using NUnit.Framework;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.VFX;
+using UnityEngine.UI;
 
 public class RoadManager : MonoBehaviour
 {
@@ -22,8 +20,11 @@ public class RoadManager : MonoBehaviour
     private List<Vector3> nextSpawnPositions = new List<Vector3>();
     private List<Quaternion> nextSpawnRotations = new List<Quaternion>();
 
+    private List<Vector3> dangersOnRoadPositions = new List<Vector3>();
+
     //useless shit on the road
     public GameObject[] useless_Shit;
+    public Image danger_sign;
 
 
     void Start()
@@ -53,7 +54,17 @@ public class RoadManager : MonoBehaviour
 
             nextSpawnPosition.y += 1.0f; 
             Instantiate(useless_Shit[randomIndex], nextSpawnPosition, Quaternion.identity);
+            dangersOnRoadPositions.Add(nextSpawnPosition);
             nextSpawnPosition.y -= 1.0f;
+        }
+
+        if (isInDANGER_Range())
+        {
+            danger_sign.color = new Color32(255, 0, 0, 255);
+        }
+        else
+        {
+            danger_sign.color = new Color32(255, 255, 255, 255);
         }
 
         if (activeRoads.Count > maxRoads)
@@ -70,6 +81,18 @@ public class RoadManager : MonoBehaviour
             {
                 nextSpawnPosition = spawn;
                 nextSpawnRotation = nextSpawnRotations[nextSpawnPositions.IndexOf(spawn)];
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool isInDANGER_Range()
+    {
+        foreach (Vector3 spawn in dangersOnRoadPositions)
+        {
+            if (Vector3.Distance(player.position, spawn) < roadLength * 2)
+            {
                 return true;
             }
         }
