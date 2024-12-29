@@ -17,7 +17,8 @@ public class Speedometer : MonoBehaviour
     {
         // 3.6f to convert in kilometers
         // ** The speed must be clamped by the car controller **
-        speed = target.linearVelocity.magnitude * 3.6f;
+        //speed = target.linearVelocity.magnitude * 3.6f;
+        speed = CarController.getCarSpeed();
 
         if (arrow != null)
             arrow.localEulerAngles =

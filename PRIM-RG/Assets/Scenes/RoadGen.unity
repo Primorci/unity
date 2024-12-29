@@ -971,6 +971,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2353221585865748380, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+      propertyPath: autoConnect
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2353221585865748380, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+      propertyPath: brokerAddress
+      value: 10.8.1.6
+      objectReference: {fileID: 0}
     - target: {fileID: 3638911070570068518, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
       propertyPath: m_Name
       value: Player
@@ -1228,6 +1236,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5eac98a6f803454b9b31cc9794da4a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  brokerAddress: 10.8.1.6
+  brokerPort: 1883
+  isEncrypted: 0
+  certificateName: 
+  connectionDelay: 500
+  timeoutOnConnection: 30000
+  autoConnect: 1
+  mqttUserName: 
+  mqttPassword: 
   player: {fileID: 1631189556}
   roadPrefabs:
   - {fileID: 218691285806148930, guid: c184fe835255c404783cf55fa6a84d18, type: 3}
@@ -1250,7 +1267,6 @@ MonoBehaviour:
   - {fileID: 1285623803541128759, guid: 3975cf1c16c08f640a4f169d0f932545, type: 3}
   - {fileID: 6325575138822664078, guid: 8eb6789def0373b4ebc3aadd0448628b, type: 3}
   - {fileID: 8878300792723607331, guid: 8579af0f05d90ee47a95d7b6c949b3ae, type: 3}
-  initialRoadCount: 1
   roadLength: 5
   maxRoads: 20
   con: 0
