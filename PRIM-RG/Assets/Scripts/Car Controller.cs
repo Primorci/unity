@@ -8,7 +8,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 using Prometheus;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using M2MqttUnity;
@@ -69,13 +68,19 @@ public class CarController : M2MqttUnityClient
         HandleSteering();
         UpdateWheels();
 
+        try
+        {
+            CarData car = new CarData(getCarSpeed(), getDistanceTraveld(), carEvent);
+            client.Publish("game/player", Encoding.ASCII.GetBytes(JsonUtility.ToJson(car)));
 
-        CarData car = new CarData(getCarSpeed(), getDistanceTraveld(), carEvent);
-        client.Publish("game/player", Encoding.ASCII.GetBytes(JsonUtility.ToJson(car)));
-        
-        MQTTManager.CarSpeed.Set(car.speed);
-        MQTTManager.DistanceTraveled.Set(car.distanceTraveled);
-        MQTTManager.CarState.Set(car.carEvent);
+            MQTTManager.CarSpeed.Set(car.speed);
+            MQTTManager.DistanceTraveled.Set(car.distanceTraveled);
+            MQTTManager.CarState.Set(car.carEvent);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("MQTT Publishing Error: " + e.Message);
+        }
     }
 
     private void GetInput()

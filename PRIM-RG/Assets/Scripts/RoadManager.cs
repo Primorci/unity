@@ -67,11 +67,16 @@ public class RoadManager : M2MqttUnityClient
         endTime = Time.realtimeSinceStartup;
         loadTime = endTime - startTime;
 
-        RoadData road = new RoadData("generation", roadPrefab.name, loadTime, exitPointsCount, new Vector3(0, 0, 0));
-        client.Publish("game/road/generation", Encoding.ASCII.GetBytes(JsonUtility.ToJson(road)));
+        try
+        {
+            RoadData road = new RoadData("generation", roadPrefab.name, loadTime, exitPointsCount, new Vector3(0, 0, 0));
+            client.Publish("game/road/generation", Encoding.ASCII.GetBytes(JsonUtility.ToJson(road)));
 
-        PublishPrometheus(road);
-
+            PublishPrometheus(road);
+        }catch(Exception e)
+        {
+            Debug.LogError("MQTT Publishing Error: " + e.Message);
+        }
     }
 
     protected override void Update()
@@ -92,10 +97,17 @@ public class RoadManager : M2MqttUnityClient
             endTime = Time.realtimeSinceStartup;
             loadTime = endTime - startTime;
 
-            RoadData road = new RoadData("degeneration", name, loadTime, -1, new Vector3(0, 0, 0));
-            client.Publish("game/road/degeneration", Encoding.ASCII.GetBytes(JsonUtility.ToJson(road)));
+            try
+            {
+                RoadData road = new RoadData("degeneration", name, loadTime, -1, new Vector3(0, 0, 0));
+                client.Publish("game/road/degeneration", Encoding.ASCII.GetBytes(JsonUtility.ToJson(road)));
 
-            PublishPrometheus(road);
+                PublishPrometheus(road);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("MQTT Publishing Error: " + e.Message);
+            }
         }
     }
 
@@ -124,10 +136,18 @@ public class RoadManager : M2MqttUnityClient
             endTime = Time.realtimeSinceStartup;
             loadTime = endTime - startTime;
 
-            RoadData errorRoad = new RoadData("error", roadPrefab.name, loadTime, -1, nextSpawnPosition);
-            client.Publish("game/road/generation/error", Encoding.ASCII.GetBytes(JsonUtility.ToJson(errorRoad)));
+            try
+            {
+                RoadData errorRoad = new RoadData("error", roadPrefab.name, loadTime, -1, nextSpawnPosition);
+                client.Publish("game/road/generation/error", Encoding.ASCII.GetBytes(JsonUtility.ToJson(errorRoad)));
 
-            PublishPrometheus(errorRoad);
+                PublishPrometheus(errorRoad);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("MQTT Publishing Error: " + e.Message);
+            }
+
             return; // Skip generating this road segment
         }
 
@@ -148,11 +168,18 @@ public class RoadManager : M2MqttUnityClient
 
         endTime = Time.realtimeSinceStartup;
         loadTime = endTime - startTime;
+        
+        try
+        {
+            RoadData road = new RoadData("generation", roadPrefab.name, loadTime, exitPointsCount, lastPosition);
+            client.Publish("game/road/generation", Encoding.ASCII.GetBytes(JsonUtility.ToJson(road)));
 
-        RoadData road = new RoadData("generation", roadPrefab.name, loadTime, exitPointsCount, lastPosition);
-        client.Publish("game/road/generation", Encoding.ASCII.GetBytes(JsonUtility.ToJson(road)));
-
-        PublishPrometheus(road);
+            PublishPrometheus(road);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("MQTT Publishing Error: " + e.Message);
+        }
     }
 
     int CollectExitPoints(GameObject road)

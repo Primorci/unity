@@ -175,8 +175,6 @@ public class MQTTManager : M2MqttUnityClient
         }
     );
 
-    //public string MqttAddres = "10.8.1.6";
-
     private HttpListener listener;
     private const string url = "http://localhost:5555/";
     private bool running = true;
@@ -192,28 +190,6 @@ public class MQTTManager : M2MqttUnityClient
         sessionTimeStart = Time.realtimeSinceStartup;
 
         base.Start();
-
-
-        //// Initialize the MQTT broker and test the connection
-        //client = new MqttClient(brokerAddress);
-        //client.MqttMsgPublishReceived += onMessageReceived;
-        //string clientId = Guid.NewGuid().ToString();
-        //try
-        //{
-        //    client.Connect(clientId);
-        //    if (client.IsConnected)
-        //    {
-        //        Debug.Log("MQTT Client connected successfully!");
-        //    }
-        //    else
-        //    {
-        //        Debug.LogError("Failed to connect to MQTT broker.");
-        //    }
-        //}
-        //catch (Exception ex)
-        //{
-        //    Debug.LogError($"Exception during MQTT connection: {ex.Message}");
-        //}
 
         try
         {
@@ -242,12 +218,6 @@ public class MQTTManager : M2MqttUnityClient
     private void OnDestroy()
     {
         SessionDuration.Observe(Time.realtimeSinceStartup - sessionTimeStart);
-        //JSONFormating.SessionData data = new JSONFormating.SessionData(Time.realtimeSinceStartup);
-        //MQTTManager.PublishData(
-        //    "game/Session/duration",
-        //    JsonUtility.ToJson(data),
-        //    JSONFormating.CreatePrometheusFormat<JSONFormating.SessionData>(data)
-        //);
 
         // Clean up the Mqtt when the application quits
         if (client != null && client.IsConnected)
