@@ -445,7 +445,7 @@ MonoBehaviour:
   certificateName: 
   connectionDelay: 500
   timeoutOnConnection: 30000
-  autoConnect: 0
+  autoConnect: 1
   mqttUserName: 
   mqttPassword: 
 --- !u!4 &358531670
@@ -498,7 +498,7 @@ MonoBehaviour:
   certificateName: 
   connectionDelay: 500
   timeoutOnConnection: 30000
-  autoConnect: 0
+  autoConnect: 1
   mqttUserName: 
   mqttPassword: 
 --- !u!4 &887212901
@@ -524,6 +524,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2353221585865748380, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+      propertyPath: autoConnect
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2353221585865748380, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
       propertyPath: brokerAddress
       value: 10.8.1.6
@@ -617,7 +621,7 @@ MonoBehaviour:
   certificateName: 
   connectionDelay: 500
   timeoutOnConnection: 30000
-  autoConnect: 0
+  autoConnect: 1
   mqttUserName: 
   mqttPassword: 
   player: {fileID: 1631189556}
