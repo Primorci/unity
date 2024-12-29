@@ -1,32 +1,35 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Main_Menu : MonoBehaviour
+namespace Main_Menu_2
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class Main_Menu : MonoBehaviour
     {
-        
-    }
+        // Start is called once before the first execution of Update after the MonoBehaviour is created
+        void Start()
+        {
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+        }
 
-    public void PlayGame()
-    {
-        SceneManager.LoadSceneAsync(1);
-    }
+        // Update is called once per frame
+        void Update()
+        {
 
-    public void QuitGame()
-    {
-        Application.Quit();
-    }
+        }
 
-    public void ExitGame()
-    {
-        SceneManager.LoadSceneAsync(0);
+        public void PlayGame()
+        {
+            SceneManager.LoadSceneAsync(2);
+        }
+
+        public void QuitGame()
+        {
+            Application.Quit();
+        }
+
+        public void ExitGame()
+        {
+            SceneManager.LoadSceneAsync(0);
+        }
     }
 }
