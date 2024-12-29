@@ -22,6 +22,9 @@ public class RoadManager : MonoBehaviour
     private List<Vector3> nextSpawnPositions = new List<Vector3>();
     private List<Quaternion> nextSpawnRotations = new List<Quaternion>();
 
+    //useless shit on the road
+    public GameObject[] useless_Shit;
+
 
     void Start()
     {
@@ -43,6 +46,14 @@ public class RoadManager : MonoBehaviour
         {
             SpawnRoadSegment(RandomRoadSegment());
             con = false;
+
+            //useless shit creation
+            int randomIndex = Random.Range(0, useless_Shit.Length);
+            //Vector3 randomSpawnPosition = new Vector3(Random.Range(-10, 11), 5, Random.Range(-10, 11));
+
+            nextSpawnPosition.y += 1.0f; 
+            Instantiate(useless_Shit[randomIndex], nextSpawnPosition, Quaternion.identity);
+            nextSpawnPosition.y -= 1.0f;
         }
 
         if (activeRoads.Count > maxRoads)

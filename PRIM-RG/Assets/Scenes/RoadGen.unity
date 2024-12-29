@@ -1254,6 +1254,9 @@ MonoBehaviour:
   roadLength: 5
   maxRoads: 20
   con: 0
+  useless_Shit:
+  - {fileID: 919132149155446097, guid: d75c0c950982e48ddbf82c9f26ade57b, type: 3}
+  - {fileID: 919132149155446097, guid: d8d56f9d04dea472787b9b2d77422aea, type: 3}
 --- !u!4 &1814100375
 Transform:
   m_ObjectHideFlags: 0
