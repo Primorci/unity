@@ -59,7 +59,8 @@ public class RoadManager : M2MqttUnityClient
         base.Start();
 
         startTime = Time.realtimeSinceStartup;
-        var roadPrefab = RandomRoadSegment();
+        //var roadPrefab = RandomRoadSegment();
+        var roadPrefab = roadPrefabs[25];
         lastRoadSegment = Instantiate(roadPrefab, nextSpawnPosition, nextSpawnRotation);
         activeRoads.Enqueue(lastRoadSegment);
         var exitPointsCount = CollectExitPoints(lastRoadSegment);

@@ -146,6 +146,10 @@ PrefabInstance:
       value: T_Intersection
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9583d1afcb3fee445abd3a7d9f6dfd16, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9583d1afcb3fee445abd3a7d9f6dfd16, type: 3}
       propertyPath: m_TagString
       value: Road
       objectReference: {fileID: 0}

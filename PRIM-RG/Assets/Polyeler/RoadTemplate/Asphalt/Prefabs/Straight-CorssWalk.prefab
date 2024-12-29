@@ -115,6 +115,10 @@ PrefabInstance:
       value: Straight-CorssWalk
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: babbaea3a1c89954684b982ec2d65d64, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: babbaea3a1c89954684b982ec2d65d64, type: 3}
       propertyPath: m_TagString
       value: Road
       objectReference: {fileID: 0}

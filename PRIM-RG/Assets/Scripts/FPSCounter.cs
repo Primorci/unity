@@ -1,6 +1,8 @@
 using M2MqttUnity;
+using System;
 using System.Text;
 using UnityEngine;
+using static JSONFormating;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 public class FPSCounter : M2MqttUnityClient
@@ -28,8 +30,15 @@ public class FPSCounter : M2MqttUnityClient
             timeElapsed = 0f;
             frameCount = 0;
 
-            client.Publish("game/performance/fps", Encoding.ASCII.GetBytes(fps.ToString()));
-            MQTTManager.FPS.Set(fps); 
+            try
+            {
+                client.Publish("game/performance/fps", Encoding.ASCII.GetBytes(fps.ToString()));
+                MQTTManager.FPS.Set(fps);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("MQTT Publishing Error: " + e.Message);
+            }
         }
     }
 
