@@ -253,15 +253,8 @@ CanvasRenderer:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 41433731}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 24.513855, y: -17.500504, z: 73.5561}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_GameObject: {fileID: 17444903}
+  m_CullTransparentMesh: 1
 --- !u!1 &52740622
 GameObject:
   m_ObjectHideFlags: 0
@@ -1114,14 +1107,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2353221585865748380, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
-      propertyPath: autoConnect
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2353221585865748380, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
-      propertyPath: brokerAddress
-      value: 10.8.1.6
-      objectReference: {fileID: 0}
     - target: {fileID: 3638911070570068518, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
       propertyPath: m_Name
       value: Player
@@ -1379,15 +1364,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5eac98a6f803454b9b31cc9794da4a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  brokerAddress: 10.8.1.6
-  brokerPort: 1883
-  isEncrypted: 0
-  certificateName: 
-  connectionDelay: 500
-  timeoutOnConnection: 30000
-  autoConnect: 1
-  mqttUserName: 
-  mqttPassword: 
   player: {fileID: 1631189556}
   roadPrefabs:
   - {fileID: 218691285806148930, guid: c184fe835255c404783cf55fa6a84d18, type: 3}
@@ -1410,13 +1386,7 @@ MonoBehaviour:
   - {fileID: 1285623803541128759, guid: 3975cf1c16c08f640a4f169d0f932545, type: 3}
   - {fileID: 6325575138822664078, guid: 8eb6789def0373b4ebc3aadd0448628b, type: 3}
   - {fileID: 8878300792723607331, guid: 8579af0f05d90ee47a95d7b6c949b3ae, type: 3}
-  - {fileID: 8706049294324435906, guid: e7166d509c612834d81c0fc8d62e94a1, type: 3}
-  - {fileID: 8706049294324435906, guid: e26011af52769ba4c86779ec6523a20d, type: 3}
-  - {fileID: 4682462420758738538, guid: b6e1f3d0f58b6b74bbb1c409330457c8, type: 3}
-  - {fileID: 4682462420758738538, guid: c953d6e8483114e4c96c3205aa705a68, type: 3}
-  - {fileID: 2586608925348764818, guid: 6b84ab0154597b54c958231e5eada66f, type: 3}
-  - {fileID: 3205047307532450509, guid: a1579152f03a4074881f2c5884adff1f, type: 3}
-  - {fileID: 3374728180827239691, guid: 766fc8af9c9111a4dae91937dc20426e, type: 3}
+  initialRoadCount: 1
   roadLength: 5
   maxRoads: 20
   con: 0
@@ -1513,15 +1483,8 @@ CanvasRenderer:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1911966310}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 24.513855, y: -17.500504, z: 73.5561}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_GameObject: {fileID: 1893900427}
+  m_CullTransparentMesh: 1
 --- !u!1 &2033286434
 GameObject:
   m_ObjectHideFlags: 0
@@ -1988,5 +1951,3 @@ SceneRoots:
   - {fileID: 1512023390}
   - {fileID: 2043530203}
   - {fileID: 2033286437}
-  - {fileID: 41433733}
-  - {fileID: 1911966312}
