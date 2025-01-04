@@ -1,15 +1,21 @@
+
 using M2MqttUnity;
 using NUnit.Framework;
 using System;
 using System.Collections;
+
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+
 using UnityEngine.VFX;
 using UnityEngine.WSA;
 using uPLibrary.Networking.M2Mqtt.Messages;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using Random = UnityEngine.Random;
+
+using UnityEngine.UI;
+
 
 public class RoadManager : M2MqttUnityClient
 {
@@ -29,7 +35,13 @@ public class RoadManager : M2MqttUnityClient
     private List<Vector3> nextSpawnPositions = new List<Vector3>();
     private List<Quaternion> nextSpawnRotations = new List<Quaternion>();
 
+
     private float startTime, endTime, loadTime;
+
+    private List<Vector3> dangersOnRoadPositions = new List<Vector3>();
+    //useless shit on the road
+    public GameObject[] useless_Shit;
+    public Image danger_sign;
 
     private int sessionDuration = 0;
 
@@ -87,6 +99,26 @@ public class RoadManager : M2MqttUnityClient
         if (isInRange())
         {
             SpawnRoadSegment(RandomRoadSegment());
+
+            con = false;
+
+            //useless shit creation
+            int randomIndex = Random.Range(0, useless_Shit.Length);
+            //Vector3 randomSpawnPosition = new Vector3(Random.Range(-10, 11), 5, Random.Range(-10, 11));
+
+            nextSpawnPosition.y += 1.0f; 
+            Instantiate(useless_Shit[randomIndex], nextSpawnPosition, Quaternion.identity);
+            dangersOnRoadPositions.Add(nextSpawnPosition);
+            nextSpawnPosition.y -= 1.0f;
+        }
+
+        if (isInDANGER_Range())
+        {
+            danger_sign.color = new Color32(255, 0, 0, 255);
+        }
+        else
+        {
+            danger_sign.color = new Color32(255, 255, 255, 255);
         }
 
         if (activeRoads.Count > maxRoads)
@@ -121,6 +153,18 @@ public class RoadManager : M2MqttUnityClient
                 nextSpawnPosition = spawn;
                 nextSpawnRotation = nextSpawnRotations[nextSpawnPositions.IndexOf(spawn)];
                
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool isInDANGER_Range()
+    {
+        foreach (Vector3 spawn in dangersOnRoadPositions)
+        {
+            if (Vector3.Distance(player.position, spawn) < roadLength * 2)
+            {
                 return true;
             }
         }
