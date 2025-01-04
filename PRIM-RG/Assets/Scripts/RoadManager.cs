@@ -3,17 +3,14 @@ using M2MqttUnity;
 using NUnit.Framework;
 using System;
 using System.Collections;
-
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-
 using UnityEngine.VFX;
 using UnityEngine.WSA;
 using uPLibrary.Networking.M2Mqtt.Messages;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using Random = UnityEngine.Random;
-
 using UnityEngine.UI;
 
 
@@ -40,7 +37,7 @@ public class RoadManager : M2MqttUnityClient
 
     private List<Vector3> dangersOnRoadPositions = new List<Vector3>();
     //useless shit on the road
-    public GameObject[] useless_Shit;
+    public List<GameObject> useless_Shit;
     public Image danger_sign;
 
     private int sessionDuration = 0;
@@ -71,8 +68,8 @@ public class RoadManager : M2MqttUnityClient
         base.Start();
 
         startTime = Time.realtimeSinceStartup;
-        //var roadPrefab = RandomRoadSegment();
-        var roadPrefab = roadPrefabs[25];
+        var roadPrefab = RandomRoadSegment();
+        //var roadPrefab = roadPrefabs[25];
         lastRoadSegment = Instantiate(roadPrefab, nextSpawnPosition, nextSpawnRotation);
         activeRoads.Enqueue(lastRoadSegment);
         var exitPointsCount = CollectExitPoints(lastRoadSegment);
@@ -103,11 +100,11 @@ public class RoadManager : M2MqttUnityClient
             con = false;
 
             //useless shit creation
-            int randomIndex = Random.Range(0, useless_Shit.Length);
+            //int randomIndex = Random.Range(0, useless_Shit.Length);
             //Vector3 randomSpawnPosition = new Vector3(Random.Range(-10, 11), 5, Random.Range(-10, 11));
 
             nextSpawnPosition.y += 1.0f; 
-            Instantiate(useless_Shit[randomIndex], nextSpawnPosition, Quaternion.identity);
+            Instantiate(useless_Shit[Random.Range(0, useless_Shit.Count)], nextSpawnPosition, Quaternion.identity);
             dangersOnRoadPositions.Add(nextSpawnPosition);
             nextSpawnPosition.y -= 1.0f;
         }
