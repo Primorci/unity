@@ -1,6 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
+
 using UnityEngine.UI;
+
+using UnityEngine.VFX;
+using UnityEngine.WSA;
+using uPLibrary.Networking.M2Mqtt.Messages;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
+using Random = UnityEngine.Random;
+
 
 public class RoadManager : MonoBehaviour
 {
@@ -27,6 +35,16 @@ public class RoadManager : MonoBehaviour
     public Image danger_sign;
 
 
+    private float startTime, endTime, loadTime;
+
+    private int sessionDuration = 0;
+
+    private class RoadData
+    {
+        public string eventType;
+
+        public string roadType;
+
     void Start()
     {
         lastRoadSegment = Instantiate(roadPrefabs[16], nextSpawnPosition, nextSpawnRotation);
@@ -46,25 +64,6 @@ public class RoadManager : MonoBehaviour
         if (isInRange())
         {
             SpawnRoadSegment(RandomRoadSegment());
-            con = false;
-
-            //useless shit creation
-            int randomIndex = Random.Range(0, useless_Shit.Length);
-            //Vector3 randomSpawnPosition = new Vector3(Random.Range(-10, 11), 5, Random.Range(-10, 11));
-
-            nextSpawnPosition.y += 1.0f; 
-            Instantiate(useless_Shit[randomIndex], nextSpawnPosition, Quaternion.identity);
-            dangersOnRoadPositions.Add(nextSpawnPosition);
-            nextSpawnPosition.y -= 1.0f;
-        }
-
-        if (isInDANGER_Range())
-        {
-            danger_sign.color = new Color32(255, 0, 0, 255);
-        }
-        else
-        {
-            danger_sign.color = new Color32(255, 255, 255, 255);
         }
 
         if (activeRoads.Count > maxRoads)
@@ -81,18 +80,6 @@ public class RoadManager : MonoBehaviour
             {
                 nextSpawnPosition = spawn;
                 nextSpawnRotation = nextSpawnRotations[nextSpawnPositions.IndexOf(spawn)];
-                return true;
-            }
-        }
-        return false;
-    }
-
-    bool isInDANGER_Range()
-    {
-        foreach (Vector3 spawn in dangersOnRoadPositions)
-        {
-            if (Vector3.Distance(player.position, spawn) < roadLength * 2)
-            {
                 return true;
             }
         }
