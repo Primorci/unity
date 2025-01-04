@@ -14,6 +14,7 @@ using System.Collections;
 
 public class MQTTManager : M2MqttUnityClient
 {
+    #region Prometheus Variables
     // Player metrics --------------------------------------
     public static readonly Gauge CarSpeed = Metrics.CreateGauge(
         "player_speed", 
@@ -174,14 +175,7 @@ public class MQTTManager : M2MqttUnityClient
             LabelNames = new[] { "type" }
         }
     );
-
-    private HttpListener listener;
-    private const string url = "http://localhost:5555/";
-    private bool running = true;
-    private static StringBuilder prometheusResponse = new StringBuilder();
-
-    private static float timeInterval = 0.5f;
-    private static float timeElapsed = 0f;
+    #endregion
 
     private float sessionTimeStart = 0f;
 
@@ -206,8 +200,6 @@ public class MQTTManager : M2MqttUnityClient
     private new void Update()
     {
         base.Update();
-
-        timeElapsed += Time.deltaTime;
     }
 
     private void onMessageReceived(object sender, MqttMsgPublishEventArgs e)
@@ -223,12 +215,6 @@ public class MQTTManager : M2MqttUnityClient
         if (client != null && client.IsConnected)
         {
             client.Disconnect();
-        }
-
-        // Clean up the listener when the application quits
-        if (listener != null && listener.IsListening)
-        {
-            listener.Stop();
         }
     }
 }

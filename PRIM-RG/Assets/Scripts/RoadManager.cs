@@ -31,8 +31,6 @@ public class RoadManager : M2MqttUnityClient
 
     private float startTime, endTime, loadTime;
 
-    private int sessionDuration = 0;
-
     private class RoadData
     {
         public string eventType;
