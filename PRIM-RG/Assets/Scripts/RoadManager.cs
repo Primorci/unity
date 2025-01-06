@@ -40,8 +40,6 @@ public class RoadManager : M2MqttUnityClient
     public List<GameObject> useless_Shit;
     public Image danger_sign;
 
-    private int sessionDuration = 0;
-
     private class RoadData
     {
         public string eventType;
