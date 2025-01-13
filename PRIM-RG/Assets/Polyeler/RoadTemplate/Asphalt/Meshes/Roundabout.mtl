@@ -1,0 +1,35 @@
+# Blender 4.3.2 MTL File: 'road_template.blend'
+# www.blender.org
+
+newmtl asphalt_01
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/mihap/Downloads/BakedAsphalt.png
+map_Ns C:/Users/mihap/Downloads/Textures/asphalt_01_4k/asphalt_01_rough_4k.exr
+map_Bump -bm 0.110000 C:/Users/mihap/Downloads/Textures/asphalt_01_4k/asphalt_01_nor_gl_4k.exr
+
+newmtl asphalt_01_CrossWalk
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/mihap/Downloads/BakedAsphalt.png
+map_Ns C:/Users/mihap/Downloads/School/asphalt_01_4k.blend/textures/asphalt_01_rough_4k.exr
+map_Bump -bm 0.110000 C:/Users/mihap/Downloads/School/asphalt_01_4k.blend/textures/asphalt_01_nor_gl_4k.exr
+
+newmtl asphalt_04
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/mihap/Downloads/Textures/asphalt_04_4k/asphalt_04_diff_4k.jpg
+map_Bump -bm 1.000000 C:/Users/mihap/Downloads/Textures/asphalt_04_4k/asphalt_04_nor_gl_4k.exr
