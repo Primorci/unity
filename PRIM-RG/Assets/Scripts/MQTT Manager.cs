@@ -178,6 +178,7 @@ public class MQTTManager : M2MqttUnityClient
     #endregion
 
     private float sessionTimeStart = 0f;
+    private string topic = "/YOLO/result";
 
     private new void Start()
     {
@@ -200,6 +201,24 @@ public class MQTTManager : M2MqttUnityClient
     private new void Update()
     {
         base.Update();
+    }
+
+    protected override void SubscribeTopics()
+    {
+        client.Subscribe(new string[] { topic }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE });
+        Debug.Log("Subscribed to topic: " + topic);
+    }
+
+    protected override void UnsubscribeTopics()
+    {
+        client.Unsubscribe(new string[] { topic });
+        Debug.Log("Unsubscribed from topic: " + topic);
+    }
+
+    protected override void DecodeMessage(string topic, byte[] message)
+    {
+        string payload = Encoding.UTF8.GetString(message);
+        Debug.Log($"Message received on topic {topic}: {payload}");
     }
 
     private void onMessageReceived(object sender, MqttMsgPublishEventArgs e)
