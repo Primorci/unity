@@ -1,0 +1,45 @@
+# Blender 4.3.2 MTL File: 'road_template.blend'
+# www.blender.org
+
+newmtl Soil
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Textures/Ground_Dirt_007_SD/Ground_Dirt_007_basecolor.jpg
+map_Ns Textures/Ground_Dirt_007_SD/Ground_Dirt_007_roughness.jpg
+map_Bump -bm 1.000000 Textures/Ground_Dirt_007_SD/Ground_Dirt_007_normal.jpg
+
+newmtl Soil/Gravel.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd sSoilGravel_diff.png
+map_Ns sSoilGravel_rough.png
+map_Bump -bm 1.000000 sSoliGravel_norm.png
+
+newmtl Soil/Gravel.002
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd tSoliGravel_diff.png
+map_Ns tSoilGravel_rough.png
+map_Bump -bm 1.000000 tSoilGravel_norm.png
+
+newmtl gravel
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Ns -o -2.7 0 0 -s 1.2 1.2 1.2 Textures/Ground_Dirt_009_SD/Ground_Dirt_009_Roughness.jpg

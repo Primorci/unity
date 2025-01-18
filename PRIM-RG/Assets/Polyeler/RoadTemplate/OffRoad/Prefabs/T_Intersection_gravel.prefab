@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 4537178411234143573}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -18, y: 0.1, z: -18}
+  m_LocalPosition: {x: -18, y: 0, z: -18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -87,7 +87,7 @@ Transform:
   m_GameObject: {fileID: 8422540099327924968}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.1, z: -36}
+  m_LocalPosition: {x: 0, y: 0, z: -36}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -141,6 +141,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: bc750487472b80b4096469cd88c13312, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 47c508dd83ff62e4f94296372ba1c7cb, type: 2}
+    - target: {fileID: -7635826562936255635, guid: bc750487472b80b4096469cd88c13312, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 72e0fb23388917c4489a931a9194229b, type: 2}
+    - target: {fileID: -7635826562936255635, guid: bc750487472b80b4096469cd88c13312, type: 3}
+      propertyPath: 'm_Materials.Array.data[2]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 46a1e0c16436b1c4285b18688d664aac, type: 2}
+    - target: {fileID: -7635826562936255635, guid: bc750487472b80b4096469cd88c13312, type: 3}
+      propertyPath: 'm_Materials.Array.data[3]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4687159f5f2bb5e468389d2ed7e092b1, type: 2}
     - target: {fileID: 919132149155446097, guid: bc750487472b80b4096469cd88c13312, type: 3}
       propertyPath: m_Name
       value: T_Intersection_gravel

@@ -1669,6 +1669,7 @@ MonoBehaviour:
   useless_Shit:
   - {fileID: 6887549607072955445, guid: 44d5d732f5c254363bb1291a8a467092, type: 3}
   - {fileID: 1153616681786257397, guid: 7ffa7073b110b4a968b1fd048fd3fa12, type: 3}
+  - {fileID: 933738511553406173, guid: 1a570f403ac9fbc439ef2f8f8fbaed19, type: 3}
   danger_sign: {fileID: 1893900429}
 --- !u!4 &1814100375
 Transform:

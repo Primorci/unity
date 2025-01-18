@@ -7,8 +7,8 @@ using NUnit.Framework.Internal;
 public class CameraScreenshot : MonoBehaviour
 {
     public Camera targetCamera; // Assign the specific camera in the Inspector
-    public int imageWidth = 1920;
-    public int imageHeight = 1080;
+    public int imageWidth = 800;
+    public int imageHeight = 600;
     public string BMPsavePath = "Assets/Screenshots/Raw/";
     public string BMPfileName = "screenshot";
     public string binSavePath = "Assets/Screenshots/Compress/";
