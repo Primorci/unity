@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Road
   - RoadChoice
+  - Asphalt
+  - Gravel
   layers:
   - Default
   - TransparentFX

@@ -6,7 +6,7 @@ using UnityEngine;
 public class ImageCompression
 {
     private static int bitCount = 0;
-    private static List<byte> buffer = new List<byte>();
+    public static List<byte> buffer = new List<byte>();
 
     public static byte[] compress(byte[][] channel, int height, int width)
     {
@@ -34,6 +34,8 @@ public class ImageCompression
         setHeader((short)height, (byte)C[0], C[size - 1], size);
 
         IC(C, 0, size - 1);
+
+        bitCount = 0;
 
         return buffer.ToArray();
     }

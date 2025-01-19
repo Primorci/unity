@@ -438,6 +438,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a67821bb39dc43a2a0a1454b601014f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &57183474 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4467937084951078353, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+  m_PrefabInstance: {fileID: 1512023390}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &57183476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 57183474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
 --- !u!1 &146939004
 GameObject:
   m_ObjectHideFlags: 0
@@ -930,6 +958,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53bc5944434b394439a25ad35f5ec725, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  brokerAddress: 10.8.1.6
+  brokerPort: 1883
+  isEncrypted: 0
+  certificateName: 
+  connectionDelay: 500
+  timeoutOnConnection: 30000
+  autoConnect: 1
+  mqttUserName: 
+  mqttPassword: 
   targetCamera: {fileID: 157965189}
   imageWidth: 1920
   imageHeight: 1080
@@ -1373,7 +1410,13 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 3925100654907381678, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1438373660280067497, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2083512693}
+    - targetCorrespondingSourceObject: {fileID: 4467937084951078353, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 57183476}
   m_SourcePrefab: {fileID: 100100000, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
 --- !u!1 &1628588597
 GameObject:
@@ -1663,14 +1706,21 @@ MonoBehaviour:
   - {fileID: 3569691503866934235, guid: 76cfce92fa95669469b3be8d022bbde8, type: 3}
   - {fileID: 5034154292710071012, guid: 34264fcde84046541892d46120b65f58, type: 3}
   - {fileID: 1285623803541128759, guid: 3975cf1c16c08f640a4f169d0f932545, type: 3}
+  - {fileID: 8706049294324435906, guid: e7166d509c612834d81c0fc8d62e94a1, type: 3}
+  - {fileID: 8706049294324435906, guid: e26011af52769ba4c86779ec6523a20d, type: 3}
+  - {fileID: 4682462420758738538, guid: b6e1f3d0f58b6b74bbb1c409330457c8, type: 3}
+  - {fileID: 4682462420758738538, guid: c953d6e8483114e4c96c3205aa705a68, type: 3}
+  - {fileID: 2586608925348764818, guid: 6b84ab0154597b54c958231e5eada66f, type: 3}
+  - {fileID: 3205047307532450509, guid: a1579152f03a4074881f2c5884adff1f, type: 3}
+  - {fileID: 3374728180827239691, guid: 766fc8af9c9111a4dae91937dc20426e, type: 3}
   roadLength: 5
   maxRoads: 20
-  con: 0
-  useless_Shit:
-  - {fileID: 6887549607072955445, guid: 44d5d732f5c254363bb1291a8a467092, type: 3}
+  dangerPrefabs:
   - {fileID: 1153616681786257397, guid: 7ffa7073b110b4a968b1fd048fd3fa12, type: 3}
+  - {fileID: 6887549607072955445, guid: 44d5d732f5c254363bb1291a8a467092, type: 3}
   - {fileID: 933738511553406173, guid: 1a570f403ac9fbc439ef2f8f8fbaed19, type: 3}
   danger_sign: {fileID: 1893900429}
+  con: 0
 --- !u!4 &1814100375
 Transform:
   m_ObjectHideFlags: 0
@@ -2082,6 +2132,34 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2058550437}
   m_CullTransparentMesh: 1
+--- !u!1 &2083512691 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1438373660280067497, guid: 0830086465bbffd4ab64ee6fc8c82d74, type: 3}
+  m_PrefabInstance: {fileID: 1512023390}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2083512693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2083512691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
 --- !u!1 &2083567970
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,9 +11,17 @@ using static UnityEngine.Rendering.DebugUI;
 using UnityEditor;
 using Prometheus;
 using System.Collections;
+using UnityEditor.ShaderGraph.Serialization;
 
 public class MQTTManager : M2MqttUnityClient
 {
+    public class Yolo
+    {
+        public bool detected_danger;
+        public int distance_danger;
+        public string road_type;
+    }
+
     #region Prometheus Variables
     // Player metrics --------------------------------------
     public static readonly Gauge CarSpeed = Metrics.CreateGauge(
@@ -178,7 +186,7 @@ public class MQTTManager : M2MqttUnityClient
     #endregion
 
     private float sessionTimeStart = 0f;
-    private string topic = "/YOLO/result";
+    private string topic = "/YOLO/unity";
 
     private new void Start()
     {
@@ -217,13 +225,20 @@ public class MQTTManager : M2MqttUnityClient
 
     protected override void DecodeMessage(string topic, byte[] message)
     {
+        // Convert byte array to string
         string payload = Encoding.UTF8.GetString(message);
         Debug.Log($"Message received on topic {topic}: {payload}");
-    }
 
-    private void onMessageReceived(object sender, MqttMsgPublishEventArgs e)
-    {
-        Debug.Log("Received message: " + System.Text.Encoding.UTF8.GetString(e.Message));
+        // Deserialize JSON using Newtonsoft.Json
+        Yolo yoloResult = JsonUtility.FromJson<Yolo>(payload);
+
+        // Update your results object with the deserialized values
+        YoloResults.distance = yoloResult.distance_danger;
+        YoloResults.isDanger = yoloResult.detected_danger;
+        YoloResults.roadType = yoloResult.road_type;
+
+        // Log the results
+        Debug.Log(YoloResults.isDanger.ToString() + " " + YoloResults.roadType + " " + YoloResults.distance);
     }
 
     private void OnDestroy()

@@ -18,9 +18,11 @@ public class RoadManager : M2MqttUnityClient
 {
     public Transform player;
     public List<GameObject> roadPrefabs;
-    //public int initialRoadCount = 1;
     public float roadLength = 10f;
     public int maxRoads = 10;
+
+    public List<GameObject> dangerPrefabs;
+    public Image danger_sign;
 
     public bool con = false;
 
@@ -32,31 +34,51 @@ public class RoadManager : M2MqttUnityClient
     private List<Vector3> nextSpawnPositions = new List<Vector3>();
     private List<Quaternion> nextSpawnRotations = new List<Quaternion>();
 
+    private List<Vector3> nextSpawnPositionsDanger = new List<Vector3>();
+    private List<Quaternion> nextSpawnRotationsDanger = new List<Quaternion>();
 
     private float startTime, endTime, loadTime;
 
     private List<Vector3> dangersOnRoadPositions = new List<Vector3>();
-    //useless shit on the road
-    public List<GameObject> useless_Shit;
-    public Image danger_sign;
 
     private class RoadData
     {
         public string eventType;
 
         public string roadType;
+        public string roadName;
 
         public float loadTime;
         public int exitPointCount;
         public Vector3 position;
 
         public RoadData() { }
-        public RoadData(string eventType, string roadType, float loadTime, int exitPointCount, Vector3 position)
+        public RoadData(string eventType, string roadName, string roadType, float loadTime, int exitPointCount, Vector3 position)
         {
             this.eventType = eventType;
+            this.roadName = roadName;
             this.roadType = roadType;
             this.loadTime = loadTime;
             this.exitPointCount = exitPointCount;
+            this.position = position;
+        }
+    }
+
+    private class DangerData
+    {
+        public string eventType;
+
+        public string dangerType;
+
+        public float loadTime;
+        public Vector3 position;
+
+        public DangerData() { }
+        public DangerData(string eventType, string DangerType, float loadTime, Vector3 position)
+        {
+            this.eventType = eventType;
+            this.dangerType = DangerType;
+            this.loadTime = loadTime;
             this.position = position;
         }
     }
@@ -77,7 +99,7 @@ public class RoadManager : M2MqttUnityClient
 
         try
         {
-            RoadData road = new RoadData("generation", roadPrefab.name, loadTime, exitPointsCount, new Vector3(0, 0, 0));
+            RoadData road = new RoadData("generation", roadPrefab.name, roadPrefab.tag, loadTime, exitPointsCount, new Vector3(0, 0, 0));
             client.Publish("game/road/generation", Encoding.ASCII.GetBytes(JsonUtility.ToJson(road)));
 
             PublishPrometheus(road);
@@ -91,43 +113,18 @@ public class RoadManager : M2MqttUnityClient
     {
         base.Update();
 
-        if (isInRange())
-        {
-            SpawnRoadSegment(RandomRoadSegment());
-
-            con = false;
-
-            //useless shit creation
-            //int randomIndex = Random.Range(0, useless_Shit.Length);
-            //Vector3 randomSpawnPosition = new Vector3(Random.Range(-10, 11), 5, Random.Range(-10, 11));
-
-            nextSpawnPosition.y += 1.0f; 
-            Instantiate(useless_Shit[Random.Range(0, useless_Shit.Count)], nextSpawnPosition, Quaternion.identity);
-            dangersOnRoadPositions.Add(nextSpawnPosition);
-            nextSpawnPosition.y -= 1.0f;
-        }
-
-        if (isInDANGER_Range())
-        {
-            danger_sign.color = new Color32(255, 0, 0, 255);
-        }
-        else
-        {
-            danger_sign.color = new Color32(255, 255, 255, 255);
-        }
-
         if (activeRoads.Count > maxRoads)
         {
             startTime = Time.realtimeSinceStartup;
 
-            string name = RemoveOldestRoadSegment();
+            Tuple<string, string> oldRoad = RemoveOldestRoadSegment();
 
             endTime = Time.realtimeSinceStartup;
             loadTime = endTime - startTime;
 
             try
             {
-                RoadData road = new RoadData("degeneration", name, loadTime, -1, new Vector3(0, 0, 0));
+                RoadData road = new RoadData("degeneration", oldRoad.Item1, oldRoad.Item2, loadTime, -1, new Vector3(0, 0, 0));
                 client.Publish("game/road/degeneration", Encoding.ASCII.GetBytes(JsonUtility.ToJson(road)));
 
                 PublishPrometheus(road);
@@ -136,6 +133,27 @@ public class RoadManager : M2MqttUnityClient
             {
                 Debug.LogError("MQTT Publishing Error: " + e.Message);
             }
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (isInRange())
+        {
+            SpawnRoadSegment(RandomRoadSegment());
+        }
+
+        if (YoloResults.distance == 2)
+        {
+            danger_sign.color = new Color32(255, 0, 0, 255);
+        }
+        else if (YoloResults.distance == 1)
+        {
+            danger_sign.color = new Color32(255, 165, 0, 255);
+        }
+        else
+        {
+            danger_sign.color = new Color32(255, 255, 255, 255);
         }
     }
 
@@ -166,7 +184,6 @@ public class RoadManager : M2MqttUnityClient
         return false;
     }
 
-
     public void SpawnRoadSegment(GameObject roadPrefab)
     {
         startTime = Time.realtimeSinceStartup;
@@ -178,7 +195,7 @@ public class RoadManager : M2MqttUnityClient
 
             try
             {
-                RoadData errorRoad = new RoadData("error", roadPrefab.name, loadTime, -1, nextSpawnPosition);
+                RoadData errorRoad = new RoadData("error", roadPrefab.name, roadPrefab.tag, loadTime, -1, nextSpawnPosition);
                 client.Publish("game/road/generation/error", Encoding.ASCII.GetBytes(JsonUtility.ToJson(errorRoad)));
 
                 PublishPrometheus(errorRoad);
@@ -200,7 +217,6 @@ public class RoadManager : M2MqttUnityClient
         activeRoads.Enqueue(newRoad);
 
         Vector3 lastPosition = nextSpawnPosition;
-      
 
         var exitPointsCount = CollectExitPoints(newRoad);
 
@@ -208,13 +224,21 @@ public class RoadManager : M2MqttUnityClient
 
         endTime = Time.realtimeSinceStartup;
         loadTime = endTime - startTime;
-        
+
+        GameObject danger = spawnDanger(newRoad);
+
+        endTime = Time.realtimeSinceStartup;
+        loadTime = endTime - startTime;
+        DangerData dangerData = new DangerData("generation", danger.name, loadTime, danger.transform.position);
+
         try
         {
-            RoadData road = new RoadData("generation", roadPrefab.name, loadTime, exitPointsCount, lastPosition);
+            RoadData road = new RoadData("generation", roadPrefab.name,roadPrefab.tag, loadTime, exitPointsCount, lastPosition);
             client.Publish("game/road/generation", Encoding.ASCII.GetBytes(JsonUtility.ToJson(road)));
+            client.Publish("game/road/danger", Encoding.ASCII.GetBytes(JsonUtility.ToJson(dangerData)));
 
             PublishPrometheus(road);
+            PublishPrometheus(dangerData);
         }
         catch (Exception e)
         {
@@ -253,15 +277,16 @@ public class RoadManager : M2MqttUnityClient
         return roadPrefabs[Random.Range(0, roadPrefabs.Count)];
     }
 
-    string RemoveOldestRoadSegment()
+    Tuple<string, string> RemoveOldestRoadSegment()
     {
         GameObject oldestRoad = activeRoads.Dequeue();
         string name = oldestRoad.name;
+        string tag = oldestRoad.tag;
 
         Debug.Log($"Road Segment Deleted: {oldestRoad.ToString()}\nRoad Segment Count: {activeRoads.Count}");
         Destroy(oldestRoad);
 
-        return name;
+        return new Tuple<string, string>(name, tag);
     }
 
     bool CheckForIntersection(GameObject roadPrefab, Vector3 spawnPosition, Quaternion spawnRotation, GameObject lastRoadSegment)
@@ -295,6 +320,66 @@ public class RoadManager : M2MqttUnityClient
         return false;
     }
 
+    GameObject spawnDanger(GameObject roadPrefab)
+    {
+        int spawnPos = CollectSpawnPoints(roadPrefab);
+        if (spawnPos <= 0) // Ensure there are valid spawn points
+        {
+            Debug.LogError($"No valid spawn points found in {roadPrefab.name}. spawnPos = {spawnPos}");
+            return null;
+        }
+
+        try
+        {
+            int index = Random.Range(0, nextSpawnPositionsDanger.Count);
+            GameObject dangerSpawned = Instantiate(
+                dangerPrefabs[Random.Range(0, dangerPrefabs.Count)],
+                nextSpawnPositionsDanger[index],
+                nextSpawnRotationsDanger[index]
+            );
+            dangersOnRoadPositions.Add(nextSpawnPositionsDanger[index]);
+
+            return dangerSpawned;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e.Message);
+            Debug.LogError($"nextSpawnPositionsDanger.Count = {nextSpawnPositionsDanger.Count}");
+        }
+
+        return null;
+    }
+
+    int CollectSpawnPoints(GameObject danger)
+    {
+        Transform[] spawnPoints = danger.GetComponentsInChildren<Transform>();
+
+        if (spawnPoints == null || spawnPoints.Length == 0)
+        {
+            Debug.LogWarning($"Couldn't find any spawn points in {danger.name}");
+            return 0;
+        }
+
+        nextSpawnPositionsDanger.Clear();
+        nextSpawnRotationsDanger.Clear();
+
+        foreach (Transform t in spawnPoints)
+        {
+            if (t.name.StartsWith("spawnDanger"))
+            {
+                // Add position and rotation
+                nextSpawnPositionsDanger.Add(new Vector3(t.position.x, t.position.y + 1, t.position.z));
+                nextSpawnRotationsDanger.Add(Quaternion.Euler(t.rotation.eulerAngles.x, Random.Range(0f, 360f), t.rotation.eulerAngles.z));
+            }
+        }
+
+        int count = nextSpawnPositionsDanger.Count;
+        Debug.Log($"Collected {count} valid spawn points.");
+        return count; // Return the number of valid spawn points
+    }
+
+
+
     private void PublishPrometheus(RoadData road)
     {
         MQTTManager.RoadType.WithLabels(road.roadType).Inc();
@@ -303,6 +388,15 @@ public class RoadManager : M2MqttUnityClient
         MQTTManager.RoadPositionX.Set(road.position.x);
         MQTTManager.RoadPositionY.Set(road.position.y);
         MQTTManager.RoadPositionZ.Set(road.position.z);
+    }
+
+    private void PublishPrometheus(DangerData danger)
+    {
+        MQTTManager.ObstacleType.WithLabels(danger.dangerType).Inc();
+        MQTTManager.ObstacleGenerationTime.Observe(danger.loadTime);
+        MQTTManager.ObstaclePositionX.Set(danger.position.x);
+        MQTTManager.ObstaclePositionY.Set(danger.position.y);
+        MQTTManager.ObstaclePositionZ.Set(danger.position.z);
     }
 
     void OnDrawGizmos()

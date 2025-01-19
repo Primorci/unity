@@ -83,6 +83,12 @@ namespace M2MqttUnity
         public event Action ConnectionFailed;
 
         /// <summary>
+        /// YOLO results
+        /// </summary>
+        protected bool isDanger = false;
+        protected string roadType = null;
+
+        /// <summary>
         /// Connect to the broker using current settings.
         /// </summary>
         public virtual void Connect()

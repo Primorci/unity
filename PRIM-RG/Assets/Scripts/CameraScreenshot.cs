@@ -3,20 +3,23 @@ using UnityEngine;
 using System.Drawing;
 using System;
 using NUnit.Framework.Internal;
+using System.Text;
+using UnityEditor.PackageManager;
+using M2MqttUnity;
+using uPLibrary.Networking.M2Mqtt.Exceptions;
+using System.Threading;
 
-public class CameraScreenshot : MonoBehaviour
+public class CameraScreenshot : M2MqttUnityClient
 {
     public Camera targetCamera; // Assign the specific camera in the Inspector
-    public int imageWidth = 800;
-    public int imageHeight = 600;
+    public int imageWidth = 1920;
+    public int imageHeight = 1080;
     public string BMPsavePath = "Assets/Screenshots/Raw/";
     public string BMPfileName = "screenshot";
     public string binSavePath = "Assets/Screenshots/Compress/";
     public string binFileName = "compressed";
 
-    private byte[] pixelsRaw;
-    private Color32[] pixels;
-    public void compressBMP()
+    public void compressBMP(Color32[] pixels)
     {
         byte[][] R = new byte[imageHeight][];
 
@@ -36,10 +39,11 @@ public class CameraScreenshot : MonoBehaviour
             }
         }
 
-        string binFullPath = binSavePath + binFileName + "R" + Time.realtimeSinceStartup + ".bin";
+        //string binFullPath = binSavePath + binFileName + "R" + Time.realtimeSinceStartup + ".bin";
+        string binFullPath = binSavePath + binFileName + "R" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".bin";
 
         byte[] compressed = ImageCompression.compress(R, imageHeight, imageWidth);
-
+        ImageCompression.buffer.Clear();
 
         using (BinaryWriter fs = new BinaryWriter(File.Open(binFullPath, FileMode.Create)))
         {
@@ -72,7 +76,7 @@ public class CameraScreenshot : MonoBehaviour
         }
     }
 
-    public void SaveTextureAsBMP()
+    Color32[] SaveTextureAsBMP()
     {
         // Create a RenderTexture
         RenderTexture renderTexture = new RenderTexture(imageWidth, imageHeight, 24);
@@ -91,23 +95,24 @@ public class CameraScreenshot : MonoBehaviour
         if (!screenshot.isReadable)
         {
             Debug.LogError("Texture must be readable to save as BMP.");
-            return;
+            return null;
         }
 
         // Get pixel data
-        pixels = screenshot.GetPixels32();
-        pixelsRaw = screenshot.GetRawTextureData();
+        Color32[] pixels = screenshot.GetPixels32();
         int width = screenshot.width;
         int height = screenshot.height;
 
         // Create BMP file
         byte[] bmpData = CreateBMP(pixels, width, height);
        
-        string path = BMPsavePath + BMPfileName + Time.realtimeSinceStartup + ".bmp";
+        string path = BMPsavePath + BMPfileName + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".bmp";
 
         // Write BMP to file
         File.WriteAllBytes(path, bmpData);
         Debug.Log($"BMP saved to {path}");
+
+        return screenshot.GetPixels32();
     }
 
     private byte[] CreateBMP(Color32[] pixels, int width, int height)
@@ -146,14 +151,25 @@ public class CameraScreenshot : MonoBehaviour
         return bmp;
     }
 
-    // Optional: Test the capture with a key press
-    void Update()
+    protected override void Start()
     {
+        base.Start();
+    }
+
+    // Optional: Test the capture with a key press
+    protected override void Update()
+    {
+        base.Update();
+
         if (Input.GetKeyDown(KeyCode.P))
         {
-            //CaptureScreenshot();
-            SaveTextureAsBMP();
-            compressBMP();
+            Color32[] bmpPixels = SaveTextureAsBMP();
+
+            if (bmpPixels != null)
+            {
+                compressBMP(bmpPixels);
+                bmpPixels = null;
+            }
         }
     }
 }

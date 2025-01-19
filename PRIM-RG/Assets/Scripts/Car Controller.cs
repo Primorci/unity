@@ -12,6 +12,7 @@ using Prometheus;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using M2MqttUnity;
 using System.Text;
+using Unity.VisualScripting;
 
 public class CarController : M2MqttUnityClient
 {
@@ -30,6 +31,9 @@ public class CarController : M2MqttUnityClient
     [SerializeField] private Transform frontLeftWheelTransform, frontRightWheelTransform;
     [SerializeField] private Transform rearLeftWheelTransform, rearRightWheelTransform;
 
+    // Lights
+    [SerializeField] private Light RL_light, RR_light;
+
     private Vector3 lastPosition; // Stores the last position of the car
     private float totalDistance = 0f; // Total distance traveled
 
@@ -43,17 +47,23 @@ public class CarController : M2MqttUnityClient
         public float distanceTraveled;
 
         public int carEvent;
-        public CarData(float speed, float distanceTraveled, int carEvent)
+
+        public Vector3 position;
+        public CarData(float speed, float distanceTraveled, int carEvent, Vector3 position)
         {
             this.speed = speed;
             this.distanceTraveled = distanceTraveled;
             this.carEvent = carEvent;
+            this.position = position;
         }
     }
 
     protected override void Start()
     {
         base.Start();
+
+        RL_light.intensity = 0;
+        RR_light.intensity = 0;
 
         rb = GetComponent<Rigidbody>();
         lastPosition = transform.position;
@@ -63,6 +73,11 @@ public class CarController : M2MqttUnityClient
     {
         base.Update();
 
+        if (YoloResults.isDanger && YoloResults.distance == 2)
+            isBreaking = true;
+        else
+            isBreaking = false;
+
         GetInput();
         HandleMotor();
         HandleSteering();
@@ -70,7 +85,7 @@ public class CarController : M2MqttUnityClient
 
         try
         {
-            CarData car = new CarData(getCarSpeed(), getDistanceTraveld(), carEvent);
+            CarData car = new CarData(getCarSpeed(), getDistanceTraveld(), carEvent, transform.position);
             client.Publish("game/player", Encoding.ASCII.GetBytes(JsonUtility.ToJson(car)));
 
             MQTTManager.CarSpeed.Set(car.speed);
@@ -94,14 +109,30 @@ public class CarController : M2MqttUnityClient
         // Breaking Input
         isBreaking = Input.GetKey(KeyCode.Space);
 
-        if(horizontalInput > 0)  
-           carEvent = 3;
-        else if(verticalInput > 0)
+        if (horizontalInput > 0)
+        {
+            carEvent = 3;
+            RL_light.intensity = 0;
+            RR_light.intensity = 0;
+        }
+        else if (verticalInput > 0)
+        {
             carEvent = 2;
-        else if (isBreaking)  
-            carEvent = 1; 
-        else 
-            carEvent = 0; 
+            RL_light.intensity = 0;
+            RR_light.intensity = 0;
+        }
+        else if (isBreaking)
+        {
+            carEvent = 1;
+            RL_light.intensity = 1;
+            RR_light.intensity = 1;
+        }
+        else
+        {
+            carEvent = 0;
+            RL_light.intensity = 0;
+            RR_light.intensity = 0;
+        }
     }
 
     private void HandleMotor()
@@ -118,6 +149,8 @@ public class CarController : M2MqttUnityClient
         frontLeftWheelCollider.brakeTorque = currentbreakForce;
         rearLeftWheelCollider.brakeTorque = currentbreakForce;
         rearRightWheelCollider.brakeTorque = currentbreakForce;
+
+
     }
 
     private void HandleSteering()
