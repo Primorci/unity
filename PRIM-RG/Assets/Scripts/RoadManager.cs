@@ -12,6 +12,8 @@ using uPLibrary.Networking.M2Mqtt.Messages;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using Random = UnityEngine.Random;
 using UnityEngine.UI;
+using Cursor = UnityEngine.Cursor;
+using TMPro;
 
 
 public class RoadManager : M2MqttUnityClient
@@ -26,6 +28,7 @@ public class RoadManager : M2MqttUnityClient
 
     public bool con = false;
 
+    private Queue<GameObject> activeDangers = new Queue<GameObject>();
     private Queue<GameObject> activeRoads = new Queue<GameObject>();
     private Vector3 nextSpawnPosition = Vector3.zero;
     private Quaternion nextSpawnRotation = Quaternion.identity;
@@ -40,6 +43,8 @@ public class RoadManager : M2MqttUnityClient
     private float startTime, endTime, loadTime;
 
     private List<Vector3> dangersOnRoadPositions = new List<Vector3>();
+
+    public TextMeshProUGUI textRoadType;
 
     private class RoadData
     {
@@ -72,20 +77,25 @@ public class RoadManager : M2MqttUnityClient
 
         public float loadTime;
         public Vector3 position;
+        public bool isDanger;
 
         public DangerData() { }
-        public DangerData(string eventType, string DangerType, float loadTime, Vector3 position)
+        public DangerData(string eventType, string DangerType, float loadTime, Vector3 position, bool isDanger)
         {
             this.eventType = eventType;
             this.dangerType = DangerType;
             this.loadTime = loadTime;
             this.position = position;
+            this.isDanger = isDanger;
         }
     }
 
     protected override void Start()
     {
         base.Start();
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
         startTime = Time.realtimeSinceStartup;
         //var roadPrefab = RandomRoadSegment();
@@ -113,6 +123,8 @@ public class RoadManager : M2MqttUnityClient
     {
         base.Update();
 
+        textRoadType.text = YoloResults.roadType[1];
+
         if (activeRoads.Count > maxRoads)
         {
             startTime = Time.realtimeSinceStartup;
@@ -120,11 +132,19 @@ public class RoadManager : M2MqttUnityClient
             Tuple<string, string> oldRoad = RemoveOldestRoadSegment();
 
             endTime = Time.realtimeSinceStartup;
-            loadTime = endTime - startTime;
+            float loadTimeRoad = endTime - startTime;
+
+            startTime = Time.realtimeSinceStartup;
+
+            Tuple<string, string> oldestDanger = RemoveOldestDanger();
+
+            endTime = Time.realtimeSinceStartup;
+            float loadTimeDanger = endTime - startTime;
 
             try
             {
-                RoadData road = new RoadData("degeneration", oldRoad.Item1, oldRoad.Item2, loadTime, -1, new Vector3(0, 0, 0));
+                RoadData road = new RoadData("degeneration", oldRoad.Item1, oldRoad.Item2, loadTimeRoad, -1, new Vector3(0, 0, 0));
+                DangerData danger = new DangerData("degeneration", oldRoad.Item1, loadTimeDanger, new Vector3(0, 0, 0), false);
                 client.Publish("game/road/degeneration", Encoding.ASCII.GetBytes(JsonUtility.ToJson(road)));
 
                 PublishPrometheus(road);
@@ -133,6 +153,20 @@ public class RoadManager : M2MqttUnityClient
             {
                 Debug.LogError("MQTT Publishing Error: " + e.Message);
             }
+        }
+
+        // Unlock the cursor with a specific key (optional, for debugging)
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+
+        // Relock the cursor with another key (optional)
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
     }
 
@@ -143,11 +177,11 @@ public class RoadManager : M2MqttUnityClient
             SpawnRoadSegment(RandomRoadSegment());
         }
 
-        if (YoloResults.distance == 2)
+        if (YoloResults.isDanger && YoloResults.distance == 2 && CarController.getCarSpeed() > 0.0f)
         {
             danger_sign.color = new Color32(255, 0, 0, 255);
         }
-        else if (YoloResults.distance == 1)
+        else if (YoloResults.isDanger && YoloResults.distance == 1 && CarController.getCarSpeed() > 0.0f)
         {
             danger_sign.color = new Color32(255, 165, 0, 255);
         }
@@ -166,18 +200,6 @@ public class RoadManager : M2MqttUnityClient
                 nextSpawnPosition = spawn;
                 nextSpawnRotation = nextSpawnRotations[nextSpawnPositions.IndexOf(spawn)];
                
-                return true;
-            }
-        }
-        return false;
-    }
-
-    bool isInDANGER_Range()
-    {
-        foreach (Vector3 spawn in dangersOnRoadPositions)
-        {
-            if (Vector3.Distance(player.position, spawn) < roadLength * 2)
-            {
                 return true;
             }
         }
@@ -226,14 +248,16 @@ public class RoadManager : M2MqttUnityClient
         loadTime = endTime - startTime;
 
         GameObject danger = spawnDanger(newRoad);
+        activeDangers.Enqueue(danger);
+        Danger.AddTargetObject(danger.transform);
 
         endTime = Time.realtimeSinceStartup;
-        loadTime = endTime - startTime;
-        DangerData dangerData = new DangerData("generation", danger.name, loadTime, danger.transform.position);
+        float loadTimeDanger = endTime - startTime;
 
         try
         {
             RoadData road = new RoadData("generation", roadPrefab.name,roadPrefab.tag, loadTime, exitPointsCount, lastPosition);
+            DangerData dangerData = new DangerData("generation", danger.name, loadTimeDanger, danger.transform.position, Danger.isDanger);
             client.Publish("game/road/generation", Encoding.ASCII.GetBytes(JsonUtility.ToJson(road)));
             client.Publish("game/road/danger", Encoding.ASCII.GetBytes(JsonUtility.ToJson(dangerData)));
 
@@ -283,8 +307,22 @@ public class RoadManager : M2MqttUnityClient
         string name = oldestRoad.name;
         string tag = oldestRoad.tag;
 
+        GameObject oldestDanger = activeDangers.Dequeue();
+
         Debug.Log($"Road Segment Deleted: {oldestRoad.ToString()}\nRoad Segment Count: {activeRoads.Count}");
         Destroy(oldestRoad);
+
+        return new Tuple<string, string>(name, tag);
+    }
+
+    Tuple<string, string> RemoveOldestDanger()
+    {
+        GameObject oldestDanger = activeDangers.Dequeue();
+        string name = oldestDanger.name;
+        string tag = oldestDanger.tag;
+
+        Debug.Log($"Road Segment Deleted: {oldestDanger.ToString()}\nRoad Segment Count: {activeRoads.Count}");
+        Destroy(oldestDanger);
 
         return new Tuple<string, string>(name, tag);
     }

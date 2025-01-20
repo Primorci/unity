@@ -21,7 +21,7 @@ public class CarController : M2MqttUnityClient
     private bool isBreaking;
 
     // Settings
-    [SerializeField] private float motorForce, breakForce, maxSteerAngle;
+    [SerializeField] private float motorForce, breakForce, maxSteerAngle, maxSpeed;
 
     // Wheel Colliders
     [SerializeField] private WheelCollider frontLeftWheelCollider, frontRightWheelCollider;
@@ -40,6 +40,8 @@ public class CarController : M2MqttUnityClient
     private static Rigidbody rb;
 
     private int carEvent;
+
+    private bool cont;
 
     private class CarData
     {
@@ -73,11 +75,6 @@ public class CarController : M2MqttUnityClient
     {
         base.Update();
 
-        if (YoloResults.isDanger && YoloResults.distance == 2)
-            isBreaking = true;
-        else
-            isBreaking = false;
-
         GetInput();
         HandleMotor();
         HandleSteering();
@@ -106,20 +103,19 @@ public class CarController : M2MqttUnityClient
         // Acceleration Input
         verticalInput = Input.GetAxis("Vertical");
 
+        cont = Input.GetKey(KeyCode.C) || YoloResults.distance < 2 || Input.GetKey(KeyCode.LeftShift);
+
         // Breaking Input
-        isBreaking = Input.GetKey(KeyCode.Space);
+        isBreaking = Input.GetKey(KeyCode.Space) || (YoloResults.isDanger && YoloResults.distance == 2 && CarController.getCarSpeed() > 0.0f && !cont);
+
 
         if (horizontalInput > 0)
         {
             carEvent = 3;
-            RL_light.intensity = 0;
-            RR_light.intensity = 0;
         }
         else if (verticalInput > 0)
         {
             carEvent = 2;
-            RL_light.intensity = 0;
-            RR_light.intensity = 0;
         }
         else if (isBreaking)
         {
@@ -137,8 +133,25 @@ public class CarController : M2MqttUnityClient
 
     private void HandleMotor()
     {
-        frontLeftWheelCollider.motorTorque = verticalInput * motorForce;
-        frontRightWheelCollider.motorTorque = verticalInput * motorForce;
+        //frontLeftWheelCollider.motorTorque = verticalInput * motorForce;
+        //frontRightWheelCollider.motorTorque = verticalInput * motorForce;
+        // Calculate the car's current speed in km/h
+        float currentSpeed = rb.linearVelocity.magnitude * 3.6f;
+
+        // Check if the current speed exceeds the maximum allowed speed
+        if (currentSpeed < maxSpeed)
+        {
+            // Apply motor torque if below the speed limit
+            frontLeftWheelCollider.motorTorque = verticalInput * motorForce;
+            frontRightWheelCollider.motorTorque = verticalInput * motorForce;
+        }
+        else
+        {
+            // Prevent further acceleration by setting motor torque to zero
+            frontLeftWheelCollider.motorTorque = 0;
+            frontRightWheelCollider.motorTorque = 0;
+        }
+
         currentbreakForce = isBreaking ? breakForce : 0f;
         ApplyBreaking();
     }

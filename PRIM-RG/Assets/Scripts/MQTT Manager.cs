@@ -12,6 +12,7 @@ using UnityEditor;
 using Prometheus;
 using System.Collections;
 using UnityEditor.ShaderGraph.Serialization;
+using System.Collections.Generic;
 
 public class MQTTManager : M2MqttUnityClient
 {
@@ -19,7 +20,7 @@ public class MQTTManager : M2MqttUnityClient
     {
         public bool detected_danger;
         public int distance_danger;
-        public string road_type;
+        public List<string> road_type;
     }
 
     #region Prometheus Variables

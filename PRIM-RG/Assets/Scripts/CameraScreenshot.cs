@@ -8,6 +8,7 @@ using UnityEditor.PackageManager;
 using M2MqttUnity;
 using uPLibrary.Networking.M2Mqtt.Exceptions;
 using System.Threading;
+using System.Collections;
 
 public class CameraScreenshot : M2MqttUnityClient
 {
@@ -110,7 +111,7 @@ public class CameraScreenshot : M2MqttUnityClient
 
         // Write BMP to file
         File.WriteAllBytes(path, bmpData);
-        Debug.Log($"BMP saved to {path}");
+        //Debug.Log($"BMP saved to {path}");
 
         return screenshot.GetPixels32();
     }
@@ -154,22 +155,93 @@ public class CameraScreenshot : M2MqttUnityClient
     protected override void Start()
     {
         base.Start();
+        StartCoroutine(TriggerEveryHalfSecond());
+
     }
 
     // Optional: Test the capture with a key press
     protected override void Update()
     {
         base.Update();
+    }
 
-        if (Input.GetKeyDown(KeyCode.P))
+    private IEnumerator TriggerEveryHalfSecond()
+    {
+        int count = 0;
+        while (true)
         {
             Color32[] bmpPixels = SaveTextureAsBMP();
 
             if (bmpPixels != null)
             {
                 compressBMP(bmpPixels);
-                bmpPixels = null;
             }
+
+            if (count > 20)
+            {
+                DeleteContents();
+                count = 0;
+            }
+            count++;
+
+            yield return new WaitForSeconds(0.5f); // Adjust interval as needed
+        }
+    }
+
+    private void OnDestroy()
+    {
+        DeleteContents();
+    }
+    public void DeleteContents()
+    {
+        if (Directory.Exists("Assets\\Screenshots\\Compress"))
+        {
+            // Get all files in the folder
+            string[] files = Directory.GetFiles("Assets\\Screenshots\\Compress");
+
+            foreach (var file in files)
+            {
+                File.Delete(file); // Delete each file
+            }
+
+            // Get all subdirectories in the folder
+            string[] directories = Directory.GetDirectories("Assets\\Screenshots\\Compress");
+
+            foreach (var dir in directories)
+            {
+                Directory.Delete(dir, true); // Delete subdirectories and their contents
+            }
+
+            Debug.Log("Folder contents deleted.");
+        }
+        else
+        {
+            Debug.LogError("Directory does not exist.");
+        }
+
+        if (Directory.Exists("Assets\\Screenshots\\raw"))
+        {
+            // Get all files in the folder
+            string[] files = Directory.GetFiles("Assets\\Screenshots\\raw");
+
+            foreach (var file in files)
+            {
+                File.Delete(file); // Delete each file
+            }
+
+            // Get all subdirectories in the folder
+            string[] directories = Directory.GetDirectories("Assets\\Screenshots\\raw");
+
+            foreach (var dir in directories)
+            {
+                Directory.Delete(dir, true); // Delete subdirectories and their contents
+            }
+
+            Debug.Log("Folder contents deleted.");
+        }
+        else
+        {
+            Debug.LogError("Directory does not exist.");
         }
     }
 }
